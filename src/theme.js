@@ -1,20 +1,16 @@
-import { createTheme } from '@mui/material/styles'
-import { red } from '@mui/material/colors'
+import { extendTheme } from '@mui/material/styles';
 
-const theme = createTheme({
-  cssVariables: true,
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#556cd6',
+const theme = extendTheme({
+  cssVarPrefix: 'mui',
+  colorSchemes: {
+    light: {
+      palette: { mode: 'light' },
     },
-    secondary: {
-      main: '#19857b',
-    },
-    error: {
-      main: red.A400,
+    dark: {
+      palette: { mode: 'dark' },
     },
   },
+  colorSchemeSelector: 'data-mui-color-scheme',
 });
 
 export default theme;
