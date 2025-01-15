@@ -14,25 +14,46 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+        sourceType: 'module'
+      }
     },
     settings: { react: { version: '18.3' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      'react-refresh': reactRefresh
     },
     rules: {
       ...js.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
+
       'react/jsx-no-target-blank': 'off',
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true }
       ],
-    },
-  },
+      'react/prop-types': 'off',
+      'react/display-name': 'off',
+      'no-console': 'warn',
+      'no-lonely-if': 'warn',
+      'no-unused-vars': 'warn',
+      'no-trailing-spaces': 'warn',
+      'no-multi-spaces': 'warn',
+      'no-multiple-empty-lines': 'warn',
+      'space-before-blocks': ['error', 'always'],
+      'object-curly-spacing': ['warn', 'always'],
+      'indent': ['warn', 2],
+      'semi': ['warn', 'never'],
+      'quotes': ['error', 'single'],
+      'array-bracket-spacing': 'warn',
+      'linebreak-style': 'off',
+      'no-unexpected-multiline': 'warn',
+      'keyword-spacing': 'warn',
+      'comma-dangle': 'warn',
+      'comma-spacing': 'warn',
+      'arrow-spacing': 'warn'
+    }
+  }
 ]
