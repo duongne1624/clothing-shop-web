@@ -17,7 +17,7 @@ function ModeToggle() {
   }
 
   return (
-    <Box sx={{ maxWidth: 130 }}>
+    <Box sx={{ minWidth: 135 }}>
       <FormControl fullWidth>
         <InputLabel id="mode-select-label"></InputLabel>
         <Select
@@ -25,17 +25,17 @@ function ModeToggle() {
           value={muiMode || mode}
           onChange={handleChange}
         >
-          <MenuItem value="light">
+          <MenuItem value="light" sx={{ color: 'black' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <LightModeIcon /> Light
             </Box>
           </MenuItem>
-          <MenuItem value="dark">
+          <MenuItem value="dark" sx={{ color: 'black' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <DarkModeIcon /> Dark
             </Box>
           </MenuItem>
-          <MenuItem value="system">
+          <MenuItem value="system" sx={{ color: 'black' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <SettingsBrightnessIcon /> System
             </Box>

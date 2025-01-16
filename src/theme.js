@@ -6,10 +6,11 @@ const theme = extendTheme({
     light: {
       palette: {
         mode: 'light',
-        primary: { main: '#ffcc00' }, // Màu chủ đạo giống Chợ Tốt
-        secondary: { main: '#f56a00' }, // Màu phụ
-        background: { default: '#ffffff', paper: '#f8f9fa' },
-        text: { primary: '#000', secondary: '#555' }
+        primary: { main: '#ffcc00' },
+        secondary: { main: '#f56a00' },
+        shadow: { main: 'black' },
+        background: { default: '#ffffff', banner: '04336b', paper: 'white', appbar: 'white' },
+        text: { primary: '#000', secondary: '#555', marquee: '#fff', appbar: 'black' }
       }
     },
     dark: {
@@ -17,8 +18,9 @@ const theme = extendTheme({
         mode: 'dark',
         primary: { main: '#ffcc00' },
         secondary: { main: '#f56a00' },
-        background: { default: '#121212', paper: '#1e1e1e' },
-        text: { primary: '#fff', secondary: '#ccc' }
+        shadow: { main: 'white' },
+        background: { default: '#121212', banner: '04336b', paper: 'white', appbar: 'black' },
+        text: { primary: '#fff', secondary: '#ccc', marquee: '#fff', appbar: 'white' }
       }
     }
   },
