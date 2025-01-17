@@ -5,7 +5,7 @@ import ResponsiveAppBar from './ResponsiveAppBar'
 function Header() {
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, position: 'fixed', top: 0, zIndex: '1000' }}>
       <Box sx={{
         height: 30,
         display: 'flex',
