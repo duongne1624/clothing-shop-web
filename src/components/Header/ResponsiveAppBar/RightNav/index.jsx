@@ -4,12 +4,12 @@ import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -20,9 +20,24 @@ export default function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  const handleClickCard = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Tooltip title="Cards">
+          <IconButton
+            onClick={handleClickCard}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <ShoppingCartOutlinedIcon sx={{ width: 30, height: 30, color: 'text.appbar' }} />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -32,7 +47,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32, color: 'white' }}>D</Avatar>
+            <Avatar sx={{ width: 45, height: 45, color: 'white' }} src="/broken-image.jpg" />
           </IconButton>
         </Tooltip>
       </Box>
@@ -63,7 +78,6 @@ export default function AccountMenu() {
                 right: 14,
                 width: 10,
                 height: 10,
-                bgcolor: 'background.paper',
                 transform: 'translateY(-50%) rotate(45deg)',
                 zIndex: 0
               }
@@ -74,10 +88,10 @@ export default function AccountMenu() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleClose} sx={{ color: 'black' }}>
-          <Avatar /> Profile
+          <Avatar sx={{ color: 'white' }} /> Profile
         </MenuItem>
         <MenuItem onClick={handleClose} sx={{ color: 'black' }}>
-          <Avatar /> My account
+          <Avatar sx={{ color: 'white' }} /> My account
         </MenuItem>
         <hr style={{ color: '#c7c7c7' }} />
         <MenuItem onClick={handleClose} sx={{ color: 'black' }}>

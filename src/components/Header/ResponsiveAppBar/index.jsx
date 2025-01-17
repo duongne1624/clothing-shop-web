@@ -13,7 +13,10 @@ import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 import ModeSelect from '../ModeSelect'
 
-const pages = ['Sản phẩm', 'Hàng mới', 'Áo nam', 'Quần nam', 'DENIM']
+const pages = [
+  { name: 'SALE TẾT', id: 'sale-products' },
+  { name: 'SẢN PHẨM MỚI', id: 'new-products' }
+]
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
@@ -63,27 +66,48 @@ function ResponsiveAppBar() {
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left'
-              }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
+              slotProps={{
+                paper: {
+                  elevation: 0,
+                  sx: {
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    mt: 1.5,
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1
+                    },
+                    '&::before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      left: 20,
+                      width: 10,
+                      height: 10,
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0
+                    }
+                  }
+                }
+              }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center', color: 'black' }}>{page}</Typography>
+                <MenuItem key={page.id} onClick={handleCloseNavMenu}>
+                  <Typography component="a" href={`#${page.id}`} sx={{ color: 'black', textDecoration: 'none' }}>
+                    {page.name}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <AdbIcon sx={{ display: { sm: 'none', xs: 'flex', md: 'none', left: 3 }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -105,11 +129,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: 20 } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'text.appbar', display: 'block' }}
+                key={page.id}
+                href={`#${page.id}`}
+                sx={{ my: 2, color: 'text.appbar', textDecoration: 'none' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
