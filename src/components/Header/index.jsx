@@ -1,21 +1,30 @@
-import Box from '@mui/material/Box'
-import Marqueue from './Markqueue'
-import ResponsiveAppBar from './ResponsiveAppBar'
+import { AppBar, Toolbar, Typography, Box } from '@mui/material'
 
 function Header() {
 
   return (
-    <Box sx={{ flexGrow: 1, position: 'fixed', top: 0, zIndex: '1000' }}>
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      px: 2
+    }}>
       <Box sx={{
-        height: 30,
-        display: 'flex',
-        alignItems: 'center',
-        color: 'text.marquee',
-        backgroundColor: '#0f1f5e'
+
       }}>
-        <Marqueue />
+        <Toolbar>
+          {/* SVG Logo */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h6" component="div">
+              My Application
+            </Typography>
+          </Box>
+        </Toolbar>
       </Box>
-      <ResponsiveAppBar />
+      <Box>
+          ádad
+      </Box>
     </Box>
   )
 }

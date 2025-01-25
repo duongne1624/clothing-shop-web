@@ -17,32 +17,30 @@ function ModeToggle() {
   }
 
   return (
-    <Box sx={{ minWidth: 135 }}>
-      <FormControl fullWidth>
-        <InputLabel id="mode-select-label"></InputLabel>
-        <Select
-          labelId="mode-select-label"
-          value={muiMode || mode}
-          onChange={handleChange}
-        >
-          <MenuItem value="light" sx={{ color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <LightModeIcon /> Light
-            </Box>
-          </MenuItem>
-          <MenuItem value="dark" sx={{ color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <DarkModeIcon /> Dark
-            </Box>
-          </MenuItem>
-          <MenuItem value="system" sx={{ color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <SettingsBrightnessIcon /> System
-            </Box>
-          </MenuItem>
-        </Select>
-      </FormControl>
-    </Box>
+    <FormControl fullWidth size="small">
+      <InputLabel id="mode-select-label"></InputLabel>
+      <Select
+        labelId="mode-select-label"
+        value={muiMode || mode}
+        onChange={handleChange}
+      >
+        <MenuItem value="light">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <LightModeIcon /> Light
+          </Box>
+        </MenuItem>
+        <MenuItem value="dark">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <DarkModeIcon /> Dark
+          </Box>
+        </MenuItem>
+        <MenuItem value="system">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <SettingsBrightnessIcon /> System
+          </Box>
+        </MenuItem>
+      </Select>
+    </FormControl>
   )
 }
 
