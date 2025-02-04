@@ -10,8 +10,20 @@ const theme = extendTheme({
     footerHeight: FOOTER_HEIGHT
   },
   colorSchemes: {
-    light: {},
-    dark: {}
+    light: {
+      palette: {
+        primary: { main: '#000000' },
+        secondary: { main: '#000000' },
+        headerButton: { main: '#000000' }
+      }
+    },
+    dark: {
+      palette: {
+        primary: { main: '#000000' },
+        secondary: { main: '#000000' },
+        headerButton: { main: '#000000' }
+      }
+    }
   },
   colorSchemeSelector: 'data-mui-color-scheme',
   typography: {
@@ -22,6 +34,33 @@ const theme = extendTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {}
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: '400'
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          color: '#000000',
+          fontSize: '0.875rem',
+          '.MuiOutlinedInput-notchedOutline': {
+            border: 'none'
+          },
+          '&:hover': {
+            '.MuiOutlinedInput-notchedOutline': {
+              border: 'none'
+            }
+          },
+          '& fieldset': {
+            border: 'none !important'
+          }
+        }
+      }
     }
   },
   spacing: '8px'
