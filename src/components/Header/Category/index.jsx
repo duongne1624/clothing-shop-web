@@ -1,32 +1,42 @@
 import { useState } from 'react'
-import { Button, Menu, MenuItem } from '@mui/material'
+import { Button, IconButton, Menu, MenuItem } from '@mui/material'
+import { useTheme, useMediaQuery } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import MenuIcon from '@mui/icons-material/Menu'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import CheckroomIcon from '@mui/icons-material/Checkroom'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import ListCategories from './ListCategories'
+import { categories } from '~/assets/categories'
 
-const CustomMenu = styled(Menu)(({ theme }) => ({
+const CustomMenu = styled(Menu)(() => ({
   '& .MuiPaper-root': {
-    backgroundColor: '#ffffff', // Màu nền
-    color: '#000000', // Màu chữ
-    padding: '0 0'
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    padding: '0'
   },
-  '& .MuiPaper-root .css-1toxriw-MuiList-root-MuiMenu-list': {
-    padding: '0 0'
+  '& .MuiPaper-root .MuiMenu-list': {
+    padding: '0'
   }
 }))
 
-const CustomMenuItem = styled(MenuItem)(({ theme }) => ({
+const CustomMenuItem = styled(MenuItem)(() => ({
   '&:hover': {
-    backgroundColor: '#e6e6e6' // Màu hover
+    backgroundColor: '#e6e6e6'
   },
   display: 'flex',
+  justifyContent: 'space-between',
   alignItems: 'center',
   gap: 10,
-  fontSize: '0.875rem'
+  fontSize: '0.875rem',
+  padding: '15px 20px',
+  width: '250px'
 }))
 
 const CategoryHoverMenu = () => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleMouseEnter = (event) => {
@@ -37,37 +47,58 @@ const CategoryHoverMenu = () => {
     setAnchorEl(null)
   }
 
+  const [open, setOpen] = useState(false)
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen)
+  }
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" >
+      <ListCategories />
+    </Box>
+  )
+
   return (
     <div>
-      <Button
-        aria-haspopup="true"
-        onMouseEnter={handleMouseEnter}
-        startIcon={<MenuIcon />}
-        endIcon={<ExpandMoreIcon />}
-      >
-        Danh mục
-      </Button>
-
-      <CustomMenu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMouseLeave}
-        MenuListProps={{
-          onMouseLeave: handleMouseLeave
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-      >
-        <CustomMenuItem > <CheckroomIcon /> Danh mục 1</CustomMenuItem>
-        <CustomMenuItem >Danh mục 2</CustomMenuItem>
-      </CustomMenu>
+      {!isMobile ? (
+        <>
+          <Button
+            aria-haspopup='true'
+            onMouseEnter={handleMouseEnter}
+            startIcon={<MenuIcon />}
+            endIcon={<ExpandMoreIcon />}
+          >
+            Danh mục
+          </Button>
+          <CustomMenu
+            id='category-menu'
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMouseLeave}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          >
+            {categories.map((category) => (
+              <CustomMenuItem key={category.label}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <img width='20' height='20' src={category.icon} alt={category.alt} /> {category.label}
+                </div>
+                <KeyboardArrowRightIcon />
+              </CustomMenuItem>
+            ))}
+          </CustomMenu>
+        </>
+      ) : (
+        <>
+          <IconButton onClick={toggleDrawer(true)}>
+            <MenuIcon color='headerButton' />
+          </IconButton>
+          <Drawer open={open} onClose={toggleDrawer(false)}>
+            {DrawerList}
+          </Drawer>
+        </>
+      )}
     </div>
   )
 }

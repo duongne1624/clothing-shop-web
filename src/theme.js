@@ -1,6 +1,6 @@
 import { extendTheme } from '@mui/material/styles'
 
-const HEADER_HEIGHT = '60px'
+const HEADER_HEIGHT = '75px'
 const FOOTER_HEIGHT = '60px'
 
 
@@ -13,14 +13,14 @@ const theme = extendTheme({
     light: {
       palette: {
         primary: { main: '#000000' },
-        secondary: { main: '#000000' },
+        secondary: { main: '#66d985' },
         headerButton: { main: '#000000' }
       }
     },
     dark: {
       palette: {
         primary: { main: '#000000' },
-        secondary: { main: '#000000' },
+        secondary: { main: '#66d985' },
         headerButton: { main: '#000000' }
       }
     }
