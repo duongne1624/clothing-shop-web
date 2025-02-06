@@ -5,10 +5,10 @@ function Footer() {
     <Box
       component="footer"
       sx={{
-        backgroundColor: 'background.appbar',
+        backgroundColor: 'background.footer',
         color: 'text.primary',
         py: 3,
-        mt: 5,
+        mt: 0,
         boxShadow: 20
       }}
     >

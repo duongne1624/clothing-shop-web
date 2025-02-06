@@ -27,7 +27,7 @@ function Header() {
 
   }
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const [showSearch, setShowSearch] = useState(false)
 
   return (

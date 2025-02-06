@@ -22,6 +22,7 @@ function App() {
       <Box sx={{
         width: '100%',
         height: (theme) => `calc(100% - ${theme.shop.headerHeight})`,
+        backgroundColor: 'background.main',
         overflowX: 'hidden',
         overflowY: 'auto'
       }}>

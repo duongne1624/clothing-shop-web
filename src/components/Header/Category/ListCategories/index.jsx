@@ -7,6 +7,11 @@ function ListCategories() {
 
   return (
     <>
+      <h2 style={{
+        margin: '5px 10px'
+      }}>
+        Danh mục
+      </h2>
       {categories.map((category) => (
         <Accordion key={category.label}>
           <AccordionSummary

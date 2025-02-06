@@ -1,31 +1,17 @@
-import { extendTheme } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
 
-const HEADER_HEIGHT = '75px'
-const FOOTER_HEIGHT = '60px'
+const HEADER_HEIGHT = '45px'
 
-
-const theme = extendTheme({
+const theme = createTheme({
   shop: {
-    headerHeight: HEADER_HEIGHT,
-    footerHeight: FOOTER_HEIGHT
+    headerHeight: HEADER_HEIGHT
   },
-  colorSchemes: {
-    light: {
-      palette: {
-        primary: { main: '#000000' },
-        secondary: { main: '#66d985' },
-        headerButton: { main: '#000000' }
-      }
-    },
-    dark: {
-      palette: {
-        primary: { main: '#000000' },
-        secondary: { main: '#66d985' },
-        headerButton: { main: '#000000' }
-      }
-    }
+  palette: {
+    primary: { main: '#000000' },
+    secondary: { main: '#66d985' },
+    headerButton: { main: '#000000' },
+    background: { default: '#dedede', footer: '#ffba00' }
   },
-  colorSchemeSelector: 'data-mui-color-scheme',
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
     h6: { fontWeight: 'bold' },
@@ -51,10 +37,8 @@ const theme = extendTheme({
           '.MuiOutlinedInput-notchedOutline': {
             border: 'none'
           },
-          '&:hover': {
-            '.MuiOutlinedInput-notchedOutline': {
-              border: 'none'
-            }
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            border: 'none'
           },
           '& fieldset': {
             border: 'none !important'
@@ -63,7 +47,7 @@ const theme = extendTheme({
       }
     }
   },
-  spacing: '8px'
+  spacing: 8
 })
 
 export default theme
