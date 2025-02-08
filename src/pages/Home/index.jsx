@@ -3,7 +3,8 @@ import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import Banner from './Banner/Banner'
 import Policies from './Policies/Policies'
 import VoucherList from './VoucherList/VoucherList'
-import NewProductLists from './NewProductLists/NewProductLists'
+import Blog from './Blog/Blog'
+import ProductLists from '~/components/ProductLists/ProductLists'
 
 function Home() {
   return (
@@ -40,11 +41,11 @@ function Home() {
           gap: 3
         }}>
           <Policies />
-          {/***************************Ưu đãi**************************************/}
+          {/***************************Ưu đãi**************************/}
           <VoucherList />
-          <NewProductLists />
+          <ProductLists />
           <Box>Sản phẩm bán chạy</Box>
-          <Box>Blog</Box>
+          <Blog />
         </Box>
       </Paper>
     </>

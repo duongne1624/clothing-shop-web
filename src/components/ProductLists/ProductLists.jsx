@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import Product from './Product/Product'
 
-function NewProductLists() {
+function ProductLists() {
   return (
     <Box sx={{
       display: 'flex',
@@ -29,4 +29,4 @@ function NewProductLists() {
   )
 }
 
-export default NewProductLists
+export default ProductLists

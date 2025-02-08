@@ -39,7 +39,7 @@ function Header() {
       overflowX: 'auto',
       overflowY: 'hidden',
       px: 2,
-      backgroundColor: '#ffba00'
+      backgroundColor: 'background.footer'
     }}>
       <Box sx={{
         display: 'flex',
@@ -54,9 +54,18 @@ function Header() {
           alt="logo"
           width={120}
           height={45}
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'cover', cursor: 'pointer' }}
         />
         <CategoryHoverMenu />
+      </Box>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: {
+          sm: 2,
+          xs: 0
+        }
+      }}>
         {!isMobile ? (
           <OutlinedInput
             sx={{
@@ -78,15 +87,6 @@ function Header() {
             <SearchIcon color='headerButton' />
           </IconButton>
         )}
-      </Box>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: {
-          sm: 2,
-          xs: 0
-        }
-      }}>
         <IconButton aria-label={notificationsLabel(100)}>
           <Badge badgeContent={1} color="secondary">
             <ShoppingCartOutlinedIcon color="headerButton" />
