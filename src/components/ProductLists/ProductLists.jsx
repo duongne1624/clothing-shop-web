@@ -1,7 +1,10 @@
 import { Box, Typography } from '@mui/material'
 import Product from './Product/Product'
+import { useEffect, useState } from 'react'
 
 function ProductLists() {
+  const [products, setProducts] = useState(null)
+
   return (
     <Box sx={{
       display: 'flex',

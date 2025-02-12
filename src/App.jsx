@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
+import ProductDetails from './pages/Product/_id'
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
         overflowX: 'hidden',
         overflowY: 'auto'
       }}>
-        <Home />
+        {/* <Home /> */}
+        <ProductDetails />
         <Footer />
       </Box>
     </Box>
