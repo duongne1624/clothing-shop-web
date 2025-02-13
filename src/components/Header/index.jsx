@@ -39,7 +39,8 @@ function Header() {
       overflowX: 'auto',
       overflowY: 'hidden',
       px: 2,
-      backgroundColor: 'background.footer'
+      backgroundColor: 'background.footer',
+      boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)'
     }}>
       <Box sx={{
         display: 'flex',

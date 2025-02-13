@@ -9,7 +9,7 @@ function handleClick(event) {
 
 function Breadcrumbs() {
   return (
-    <Box role="presentation" onClick={handleClick} sx={{ pl: 2, py: 2 }}>
+    <Box role="presentation" onClick={handleClick} sx={{ pl: 2, py: 0.75 }}>
       <MuiBreadcrumbs aria-label="breadcrumb">
         <Link underline="hover" color="inherit" href="/">
           MUI

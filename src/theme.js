@@ -10,7 +10,7 @@ const theme = createTheme({
     primary: { main: '#000000' },
     secondary: { main: '#66d985' },
     headerButton: { main: '#000000' },
-    background: { default: '#dedede', footer: '#ffba00' }
+    background: { default: '#f8f8f8', footer: '#ffffff' }
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
@@ -19,7 +19,22 @@ const theme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: {}
+      styleOverrides: {
+        '::-webkit-scrollbar': {
+          width: '8px',
+          height: '8px'
+        },
+        '::-webkit-scrollbar-thumb': {
+          backgroundColor: '#c4c4c4',
+          borderRadius: '4px'
+        },
+        '::-webkit-scrollbar-thumb:hover': {
+          backgroundColor: '#ababab'
+        },
+        '::-webkit-scrollbar-track': {
+          backgroundColor: '#f1f1f1'
+        }
+      }
     },
     MuiButton: {
       styleOverrides: {
@@ -43,6 +58,13 @@ const theme = createTheme({
           '& fieldset': {
             border: 'none !important'
           }
+        }
+      }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          boxShadow: 'none'
         }
       }
     }

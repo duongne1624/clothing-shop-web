@@ -9,7 +9,7 @@ function Footer() {
         color: 'text.primary',
         py: 3,
         mt: 0,
-        boxShadow: 20
+        boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)'
       }}
     >
       <Container maxWidth="xl">
