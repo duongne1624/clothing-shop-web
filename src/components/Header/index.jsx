@@ -11,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import CategoryHoverMenu from './Category'
 import Badge from '@mui/material/Badge'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
+import { useNavigate } from 'react-router-dom'
 
 function notificationsLabel(count) {
   if (count === 0) {
@@ -23,6 +24,8 @@ function notificationsLabel(count) {
 }
 
 function Header() {
+  const navigate = useNavigate()
+
   const handleClickSearch = () => {
 
   }
@@ -40,7 +43,9 @@ function Header() {
       overflowY: 'hidden',
       px: 2,
       backgroundColor: 'background.footer',
-      boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)'
+      boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)',
+      height: (theme) => theme.shop.headerHeight,
+      zIndex: 1000
     }}>
       <Box sx={{
         display: 'flex',
@@ -56,6 +61,7 @@ function Header() {
           width={120}
           height={45}
           style={{ objectFit: 'cover', cursor: 'pointer' }}
+          onClick={() => navigate('/')}
         />
         <CategoryHoverMenu />
       </Box>
@@ -70,11 +76,12 @@ function Header() {
         {!isMobile ? (
           <OutlinedInput
             sx={{
-              height: '40px',
+              height: '35px',
               color: 'black',
               backgroundColor: 'white',
-              outline: 'none',
+              border: '1px solid #000000',
               pr: '0',
+              my: 1,
               display: isMobile && !showSearch ? 'none' : 'flex'
             }}
             endAdornment={

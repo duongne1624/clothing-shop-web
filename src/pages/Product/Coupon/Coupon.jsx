@@ -1,6 +1,51 @@
-import { Box, Typography, Button } from '@mui/material'
+import * as React from 'react'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import { Box, Typography, Button, Snackbar } from '@mui/material'
 
 function Coupon() {
+  const [openSnackbar, setOpenSnackbar] = React.useState(false)
+
+  //Hành động để tắt Snackbar
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setOpenSnackbar(false)
+  }
+
+  const code = [
+    'CAPTAIN',
+    'WILSON',
+    'REDHULK',
+    'ROGERS'
+  ]
+
+  //Phương thức copy Voucher code
+  const handleCopyCode = (voucherCode) => {
+    const textArea = document.createElement('textarea')
+    textArea.value = voucherCode
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    setOpenSnackbar(true)
+  }
+
+  //Hành động khi bật Snackbar
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackbar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  )
+
   return (
     <Box sx={{
       display: 'flex',
@@ -44,17 +89,23 @@ function Coupon() {
         <Typography>Mã giảm giá bạn có thể sử dụng:</Typography>
         <Box sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
           gap: 1,
           width: '100%'
         }}>
-          <Button variant='contained' size='medium' sx={{ minWidth: '120px' }}>CAPTAIN</Button>
-          <Button variant='contained' size='medium' sx={{ minWidth: '120px' }}>WILSON</Button>
-          <Button variant='contained' size='medium' sx={{ minWidth: '120px' }}>REDHULK</Button>
-          <Button variant='contained' size='medium' sx={{ minWidth: '120px' }}>ROGERS</Button>
+          {code.map((item, index) => (
+            <Button key={index} onClick={() => handleCopyCode(item)} variant='contained' size='medium' sx={{ minWidth: '120px' }}>{item}</Button>
+          ))}
 
         </Box>
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={1500}
+        onClose={handleCloseSnackbar}
+        message={'Sao chép thành công!'}
+        action={action}
+      />
     </Box>
   )
 }

@@ -77,6 +77,7 @@ const CategoryHoverMenu = () => {
             onClick={handleMouseEnter}
             startIcon={<MenuIcon />}
             endIcon={<ExpandMoreIcon />}
+            height={(theme) => theme.shop.headerHeight}
           >
             Danh mục
           </Button>

@@ -1,9 +1,18 @@
 import { Box, Typography } from '@mui/material'
-import Product from './Product/Product'
 import { useEffect, useState } from 'react'
+import ProductCard from '../ProductCard/ProductCard'
+import { fetchProductsAPI } from '~/apis'
 
 function ProductLists() {
-  const [products, setProducts] = useState(null)
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const productsData = await fetchProductsAPI() // Gọi API đúng cách
+      setProducts(productsData)
+    }
+    getProducts()
+  }, [])
 
   return (
     <Box sx={{
@@ -20,13 +29,9 @@ function ProductLists() {
         overflowX: 'auto',
         overflowY: 'hidden'
       }}>
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
-        <Product />
+        {products.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
       </Box>
     </Box>
   )
