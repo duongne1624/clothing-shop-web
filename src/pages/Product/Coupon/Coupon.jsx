@@ -57,7 +57,8 @@ function Coupon() {
         p: '18px 15px 15px 15px',
         border: '1.8px dashed #000000', //'2px solid #FF0000'
         marginTop: '25px',
-        position: 'relative'
+        position: 'relative',
+        zIndex: 100
       }}>
         <Box sx={{
           position:'absolute',

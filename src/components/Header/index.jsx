@@ -1,27 +1,14 @@
 import { useState } from 'react'
 import Box from '@mui/material/Box'
 import { useTheme, useMediaQuery } from '@mui/material'
-import Button from '@mui/material/Button'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import IconButton from '@mui/material/IconButton'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import CategoryHoverMenu from './Category'
-import Badge from '@mui/material/Badge'
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
 import { useNavigate } from 'react-router-dom'
-
-function notificationsLabel(count) {
-  if (count === 0) {
-    return 'no notifications'
-  }
-  if (count > 99) {
-    return 'more than 99 notifications'
-  }
-  return `${count} notifications`
-}
+import Account from './Account/Account'
+import Cart from './Cart/Cart'
 
 function Header() {
   const navigate = useNavigate()
@@ -35,17 +22,18 @@ function Header() {
 
   return (
     <Box elevation={2} sx={{
+      top: 0,
+      left: 0,
+      width: '100%',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: 'auto',
-      overflowX: 'auto',
       overflowY: 'hidden',
+      overflowX: 'auto',
       px: 2,
       backgroundColor: 'background.footer',
       boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)',
-      height: (theme) => theme.shop.headerHeight,
-      zIndex: 1000
+      height: (theme) => theme.shop.headerHeight
     }}>
       <Box sx={{
         display: 'flex',
@@ -95,24 +83,10 @@ function Header() {
             <SearchIcon color='headerButton' />
           </IconButton>
         )}
-        <IconButton aria-label={notificationsLabel(100)}>
-          <Badge badgeContent={1} color="secondary">
-            <ShoppingCartOutlinedIcon color="headerButton" />
-          </Badge>
-        </IconButton>
-        {!isMobile ? (
-          <Button
-            color="headerButton"
-            startIcon= {<AccountCircleOutlinedIcon />}
-            endIcon= {<ExpandMoreIcon />}
-          >
-            Tài khoản
-          </Button>
-        ) : (
-          <IconButton>
-            <AccountCircleOutlinedIcon color='headerButton' />
-          </IconButton>
-        )}
+
+        <Cart />
+
+        <Account />
       </Box>
     </Box>
   )

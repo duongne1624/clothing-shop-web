@@ -6,11 +6,12 @@ import ImageListItem from '@mui/material/ImageListItem'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import Coupon from '~/pages/Product/Coupon/Coupon'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import { fetchProductDetailsAPI } from '~/apis'
-import ProductCard from '~/components/ProductCard/ProductCard'
+import { fetchProductDetailsAPI, fetchProductsAPI } from '~/apis'
+import ProductSlider from '~/components/ProductSlider/ProductSlider'
 
 function ProductDetails() {
   const [product, setProduct] = useState(null)
+  const [products, setProducts] = useState([])
   const [quantity, setQuantity] = useState(1)
   const [selectedColor, setSelectedColor] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
@@ -28,27 +29,42 @@ function ProductDetails() {
     fetchProductDetailsAPI(slug)
       .then((product) => {
         if (!product) {
-          navigate('/not-found') // Chuyển đến trang NotFound nếu không có sản phẩm
+          navigate('/not-found')
         } else {
           setProduct(product)
         }
       })
       .catch(() => {
-        navigate('/not-found') // Chuyển đến trang NotFound nếu có lỗi API
+        navigate('/not-found')
       })
   }, [slug, navigate])
 
   useEffect(() => {
     if (product?.colors?.length > 0) {
-      setSelectedColor(product.colors[0]) // Chọn màu đầu tiên
+      setSelectedColor(product.colors[0])
       if (product.colors[0].images.length > 0) {
         setImage(product.colors[0].images[0])
       }
     }
     if (product?.sizes?.length > 0) {
-      setSelectedSize(product.sizes[0]) // Chọn kích thước đầu tiên
+      setSelectedSize(product.sizes[0])
     }
   }, [product])
+
+  // Lấy danh sách sản phẩm
+  useEffect(() => {
+    fetchProductsAPI()
+      .then((products) => {
+        if (!products) {
+          navigate('/not-found')
+        } else {
+          setProducts(products)
+        }
+      })
+      .catch(() => {
+        navigate('/not-found')
+      })
+  }, [navigate])
 
   const allImages = product?.colors.flatMap(color => color.images)
 
@@ -122,12 +138,17 @@ function ProductDetails() {
                   display: 'flex',
                   overflowX: 'auto',
                   overflowY: 'hidden',
-                  m: 0
+                  m: 0,
+                  scrollbarWidth: 'none',
+                  '&::-webkit-scrollbar': {
+                    display: 'none'
+                  }
                 }}>
                   {allImages.map((item, index) => (
                     <ImageListItem key={index} onClick={() => setImage(item)} sx={{
                       cursor: 'pointer',
                       maxWidth: '20%',
+                      minWidth: '20%',
                       border: `1px solid ${image === item ? '#000000' : 'none'}`
                     }}>
                       <img
@@ -198,7 +219,7 @@ function ProductDetails() {
                             }
                           }}>
                           <img
-                            src={color.images}
+                            src={color.images[0]}
                             alt="variant"
                             style={{ width: '100%', borderRadius: '50%' }}
                           />
@@ -355,15 +376,16 @@ function ProductDetails() {
                 </Paper>
               </Box>
             </Box>
-            {/*     Sản phẩm liên quan         */}
+            {/*     Sản phẩm vừa xem         */}
             <Paper sx={{
               display: 'flex',
               flexDirection: 'column',
               mt: 2,
               p: 2,
-              alignItems: 'center'
+              alignItems: 'center',
+              maxWidth: '100%'
             }}>
-              <Typography variant='h6'>SẢN PHẨM LIÊN QUAN</Typography>
+              <Typography variant='h6'>SẢN PHẨM VỪA XEM</Typography>
               <Typography
                 sx={{
                   textAlign: 'center',
@@ -375,7 +397,7 @@ function ProductDetails() {
                   position: 'relative',
                   minWidth: '150px',
                   '&::before': {
-                    content: '"///"', // Dấu nháy để content hoạt động
+                    content: '"///"',
                     color: '#000',
                     position: 'absolute',
                     top: '-5px',
@@ -399,30 +421,8 @@ function ProductDetails() {
                 }}
               >
               </Typography>
-              {/*    Danh sách sản phẩm liên quan     */}
-              <Box sx={{
-                position: 'relative',
-                display: 'block',
-                overflow: 'hidden',
-                margin: 0,
-                mt: 5,
-                padding: 0,
-                cursor: 'pointer'
-              }}>
-                <Box sx={{
-                  display: 'flex',
-                  opacity: 1,
-                  width: '100%',
-                  transform: 'translate3d(0px, 0px, 0px)',
-                  gap: 2
-                }}>
-                  <ProductCard product={product} />
-                  <ProductCard product={product} />
-                  <ProductCard product={product} />
-                  <ProductCard product={product} />
-                  <ProductCard product={product} />
-                </Box>
-              </Box>
+              {/*    Danh sách sản phẩm vừa xem     */}
+              <ProductSlider products={products} />
             </Paper>
           </Box>
         </>

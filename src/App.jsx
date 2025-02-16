@@ -3,11 +3,14 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { routes } from '~/routes'
+import { Provider } from 'react-redux'
+import { store } from './redux/store'
+import GlobalSnackbar from './components/GlobalSnackbar/GlobalSnackbar'
 
 function App() {
 
   return (
-    <>
+    <Provider store={store}>
       <Router>
         <Routes>
           {routes.map((route) => {
@@ -22,7 +25,8 @@ function App() {
                         position: 'fixed',
                         top: 0,
                         width: '100%',
-                        height: (theme) => theme.shop.headerHeight
+                        height: (theme) => theme.shop.headerHeight,
+                        zIndex: 1000
                       }}>
                         <Header />
                       </Box>
@@ -39,6 +43,7 @@ function App() {
                         {/* <Home /> */}
                         <Page />
                         <Footer />
+                        <GlobalSnackbar />
                       </Box>
                     </>
                   ) : (
@@ -51,7 +56,7 @@ function App() {
             )})}
         </Routes>
       </Router>
-    </>
+    </Provider>
   )
 }
 

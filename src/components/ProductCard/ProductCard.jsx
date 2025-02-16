@@ -5,6 +5,9 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import CloseIcon from '@mui/icons-material/Close'
 import { useState, useEffect, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '~/redux/cartSlice'
+import { showSnackbar } from '~/redux/snackbarSlice'
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -29,6 +32,7 @@ function ProductCard({ product }) {
 
   const handleClickProduct = () => {
     navigate(`/product-details/${product.slug}`)
+    window.scrollTo(0, 0)
   }
 
   const tag = 'SALE'
@@ -65,377 +69,389 @@ function ProductCard({ product }) {
 
   const handleChooseColor = (color) => {
     setSelectedColor(color)
-    setImage(color.images)
+    setImage(color.images[0])
   }
 
   const handleChooseSize = (size) => {
     setSelectedSize(size)
   }
 
+  const dispatch = useDispatch()
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ product, quantity, selectedColor, selectedSize }))
+    setOpenDetail(false)
+    dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
+  }
+
+  const isMobile = window.innerWidth <= 768
+
   return (
-    <Box
-      sx={{
-        minWidth: '32%',
-        maxWidth: '33%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1,
-        p: 1,
-        backgroundColor: '#ffffff',
-        borderRadius: '10px',
-        position: 'relative',
-        overflow: 'hidden',
-        '&:hover .search-icon': {
-          opacity: 1,
-          transform: 'translate(-50%, -50%) scale(1)'
-        }
-      }}
-      onClick={() => handleClickProduct()}
-    >
-      {/* Hộp chứa hình ảnh */}
+    <>
       <Box
         sx={{
-          width: '100%',
-          height: 'fit-content',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          p: 1,
+          backgroundColor: '#ffffff',
+          borderRadius: '10px',
+          position: 'relative',
           overflow: 'hidden',
-          position: 'relative'
+          '&:hover .search-icon': {
+            opacity: 1,
+            transform: 'translate(-50%, -50%) scale(1)'
+          }
         }}
+        onClick={() => handleClickProduct()}
       >
-        {tag && (
+        {/* Hộp chứa hình ảnh */}
+        <Box
+          sx={{
+            width: '100%',
+            height: 'fit-content',
+            overflow: 'hidden',
+            position: 'relative'
+          }}
+        >
+          {tag && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                backgroundColor: tagColors[tag] || tagColors.DEFAULT,
+                color: '#fff',
+                padding: '4px 8px',
+                fontSize: '12px',
+                borderRadius: '5px',
+                fontWeight: 'bold'
+              }}
+            >
+              {tag}
+            </Box>
+          )}
+
+
+          {/* Hình ảnh sản phẩm */}
+          <img
+            src={imageFirst}
+            width="100%"
+            height="100%"
+            style={{ display: 'block' }}
+            alt="product"
+          />
+
+          {/* Icon tìm kiếm */}
+          {!isMobile && (
+            <IconButton
+              className="search-icon"
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%) scale(0.8)',
+                backgroundColor: 'rgba(255,255, 255,0.9)',
+                color: '#000',
+                opacity: 0,
+                transition: '0.3s ease-in-out',
+                '&:hover': {
+                  opacity: 1,
+                  transform: 'translate(-50%, -50%) scale(1)',
+                  backgroundColor: 'rgba(255,255, 255,0.9)',
+                  color: '#000'
+                }
+              }}
+            >
+              <SearchIcon />
+            </IconButton>
+          )}
+
+          {/* Nút giỏ hàng */}
           <Box
+            className="cart-button"
+            sx={{
+              position: 'absolute',
+              bottom: 8,
+              right: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#000000',
+              color: '#fff',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              width: '40px',
+              height: '40px',
+              transition: '0.3s ease-in-out',
+              '&:hover': { backgroundColor: '#fff', color: '#000' }
+            }}
+            onClick={handleOpenBackdrop}
+          >
+            <LocalMallOutlinedIcon
+              sx={{
+                fontSize: '20px',
+                transition: '0.3s ease-in-out'
+              }}
+            />
+          </Box>
+        </Box>
+
+        {/* Thông tin sản phẩm */}
+        <Typography variant="body2">
+          {product.name}
+        </Typography>
+        <Typography variant="subtitle2" fontWeight="bold">
+          {formatCurrency(product.price)}₫
+        </Typography>
+
+        {/*          Dialog thêm sản phẩm vào giỏ hàng           */}
+        <Dialog
+          open={openDetail}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseBackdrop}
+          aria-describedby="alert-dialog-slide-description"
+          fullWidth
+          maxWidth="md"
+          sx={{
+            '& .MuiDialog-paper': {
+              height: 'fit-content',
+              maxWidth: {
+                xl: '40%',
+                lg: '50%',
+                md: '65%',
+                xs: '90%'
+              },
+              borderRadius: '12px',
+              overflow: 'hidden',
+              boxShadow: 5
+            }
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Nút đóng Dialog */}
+          <IconButton
+            onClick={handleCloseBackdrop}
             sx={{
               position: 'absolute',
               top: 8,
               right: 8,
-              backgroundColor: tagColors[tag] || tagColors.DEFAULT, // Gán màu theo tag
-              color: '#fff',
-              padding: '4px 8px',
-              fontSize: '12px',
-              borderRadius: '5px',
-              fontWeight: 'bold'
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              color: '#000',
+              zIndex: 1500,
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              transition: '0.3s',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.1)'
+              }
             }}
           >
-            {tag}
-          </Box>
-        )}
+            <CloseIcon />
+          </IconButton>
 
-
-        {/* Hình ảnh sản phẩm */}
-        <img
-          src={imageFirst}
-          width="100%"
-          height="100%"
-          style={{ display: 'block' }}
-          alt="product"
-        />
-
-        {/* Icon tìm kiếm */}
-        <IconButton
-          className="search-icon"
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%) scale(0.8)',
-            backgroundColor: 'rgba(255,255, 255,0.9)',
-            color: '#000',
-            opacity: 0,
-            transition: '0.3s ease-in-out',
-            '&:hover': {
-              opacity: 1,
-              transform: 'translate(-50%, -50%) scale(1)',
-              backgroundColor: 'rgba(255,255, 255,0.9)',
-              color: '#000'
-            }
-          }}
-        >
-          <SearchIcon />
-        </IconButton>
-
-        {/* Nút giỏ hàng */}
-        <Box
-          className="cart-button"
-          sx={{
-            position: 'absolute',
-            bottom: 8,
-            right: 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#000000',
-            color: '#fff',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            cursor: 'pointer',
-            width: '40px',
-            height: '40px',
-            transition: '0.3s ease-in-out',
-            '&:hover': { backgroundColor: '#fff', color: '#000' }
-          }}
-          onClick={handleOpenBackdrop}
-        >
-          <LocalMallOutlinedIcon
-            sx={{
-              fontSize: '20px',
-              transition: '0.3s ease-in-out'
-            }}
-          />
-        </Box>
-      </Box>
-
-      {/* Thông tin sản phẩm */}
-      <Typography variant="body2">
-        {product.name}
-      </Typography>
-      <Typography variant="subtitle2" fontWeight="bold">
-        {formatCurrency(product.price)}₫
-      </Typography>
-
-      {/*          Dialog thêm sản phẩm vào giỏ hàng           */}
-      <Dialog
-        open={openDetail}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseBackdrop}
-        aria-describedby="alert-dialog-slide-description"
-        fullWidth
-        maxWidth="md"
-        sx={{
-          '& .MuiDialog-paper': {
-            height: 'fit-content',
-            maxWidth: {
-              xl: '40%',
-              lg: '50%',
-              md: '65%',
-              xs: '90%'
-            },
-            borderRadius: '12px',
-            overflow: 'hidden',
-            boxShadow: 5
-          }
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Nút đóng Dialog */}
-        <IconButton
-          onClick={handleCloseBackdrop}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            color: '#000',
-            zIndex: 1500,
-            borderRadius: '50%',
-            width: '36px',
-            height: '36px',
-            transition: '0.3s',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.1)'
-            }
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <Box sx={{
-          display: 'flex',
-          flexDirection: {
-            sm: 'row',
-            xs: 'column'
-          },
-          justifyContent: 'space-between',
-          gap: 2,
-          p: 2
-        }}>
-          {/* Hình ảnh */}
-          <Paper sx={{
-            width: {
-              md: '40%',
-              sm: '42%',
-              xs: '100%'
-            },
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2
-          }}>
-            <img
-              src={image}
-              alt="product"
-              style={{
-                width: '100%',
-                maxHeight: '300px',
-                objectFit: 'contain',
-                borderRadius: '8px'
-              }}
-            />
-          </Paper>
-
-          {/* Thông tin sản phẩm */}
           <Box sx={{
-            width: {
-              md: '60%',
-              sm: '58%',
-              xs: '100%'
-            },
             display: 'flex',
-            flexDirection: 'column',
-            gap: 2
+            flexDirection: {
+              sm: 'row',
+              xs: 'column'
+            },
+            justifyContent: 'space-between',
+            gap: 2,
+            p: 2
           }}>
+            {/* Hình ảnh */}
             <Paper sx={{
+              width: {
+                md: '40%',
+                sm: '42%',
+                xs: '100%'
+              },
               display: 'flex',
               flexDirection: 'column',
-              gap: 1
+              alignItems: 'center',
+              gap: 2
             }}>
-              {/* Tên sản phẩm */}
-              <Typography variant="h5" sx={{ fontWeight: 'bold', wordBreak: 'break-word' }}>
-                {product.name}
-              </Typography>
+              <img
+                src={image}
+                alt="product"
+                style={{
+                  width: '100%',
+                  maxHeight: '300px',
+                  objectFit: 'contain',
+                  borderRadius: '8px'
+                }}
+              />
+            </Paper>
 
-              {/* Mã sản phẩm */}
-              <Typography variant="body2" sx={{ color: 'gray' }}>
-                Mã sản phẩm: <strong>{product._id}</strong>
-              </Typography>
-
-              {/* Giá sản phẩm */}
-              <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
-                {formatCurrency(product.price)}₫
-              </Typography>
-
-              {/* Màu sắc */}
-              <Box>
-                <Typography variant="body2">Màu sắc: <strong>{selectedColor ? selectedColor.name : 'Chưa chọn'}</strong></Typography>
-                <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>
-                  {product.colors.map((color, index) => (
-                    <Box key={index}
-                      onClick={() => handleChooseColor(color)}
-                      sx={{
-                        width: 35,
-                        height: 35,
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        p: '3px',
-                        border: `1px solid ${selectedColor === color ? '#e4393c' : '#e5e5e5'}`,
-                        transition: '0.3s',
-                        '&:hover': {
-                          borderColor: '#e4393c'
-                        }
-                      }}>
-                      <img
-                        src={color.images}
-                        alt="variant"
-                        style={{ width: '100%', borderRadius: '50%' }}
-                      />
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-
-              {/* Kích thước */}
-              <Box>
-                <Typography variant="body2">Kích thước: <strong>{selectedSize || 'Chưa chọn'}</strong></Typography>
-                <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>
-                  {product.sizes.map((size, index) => (
-                    <Box key={index}
-                      onClick={() => handleChooseSize(size)}
-                      sx={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: '5px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        border: `1px solid ${selectedSize === size ? '#e4393c' : '#e5e5e5'}`,
-                        transition: '0.3s',
-                        '&:hover': {
-                          borderColor: '#e4393c'
-                        }
-                      }}>
-                      <Typography variant="body2">{size}</Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-
-
-              {/* Số lượng & Thêm vào giỏ hàng */}
-              <Box sx={{
+            {/* Thông tin sản phẩm */}
+            <Box sx={{
+              width: {
+                md: '60%',
+                sm: '58%',
+                xs: '100%'
+              },
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2
+            }}>
+              <Paper sx={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: 2
+                flexDirection: 'column',
+                gap: 1
               }}>
-                {/* Điều chỉnh số lượng */}
+                {/* Tên sản phẩm */}
+                <Typography variant="h5" sx={{ fontWeight: 'bold', wordBreak: 'break-word' }}>
+                  {product.name}
+                </Typography>
+
+                {/* Mã sản phẩm */}
+                <Typography variant="body2" sx={{ color: 'gray' }}>
+                  Mã sản phẩm: <strong>{product._id}</strong>
+                </Typography>
+
+                {/* Giá sản phẩm */}
+                <Typography variant="h6" sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
+                  {formatCurrency(product.price)}₫
+                </Typography>
+
+                {/* Màu sắc */}
+                <Box>
+                  <Typography variant="body2">Màu sắc: <strong>{selectedColor ? selectedColor.name : 'Chưa chọn'}</strong></Typography>
+                  <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>
+                    {product.colors.map((color, index) => (
+                      <Box key={index}
+                        onClick={() => handleChooseColor(color)}
+                        sx={{
+                          width: 35,
+                          height: 35,
+                          borderRadius: '50%',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          p: '3px',
+                          border: `1px solid ${selectedColor === color ? '#e4393c' : '#e5e5e5'}`,
+                          transition: '0.3s',
+                          '&:hover': {
+                            borderColor: '#e4393c'
+                          }
+                        }}>
+                        <img
+                          src={color.images[0]}
+                          alt="variant"
+                          style={{ width: '100%', borderRadius: '50%' }}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Kích thước */}
+                <Box>
+                  <Typography variant="body2">Kích thước: <strong>{selectedSize || 'Chưa chọn'}</strong></Typography>
+                  <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>
+                    {product.sizes.map((size, index) => (
+                      <Box key={index}
+                        onClick={() => handleChooseSize(size)}
+                        sx={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: '5px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          border: `1px solid ${selectedSize === size ? '#e4393c' : '#e5e5e5'}`,
+                          transition: '0.3s',
+                          '&:hover': {
+                            borderColor: '#e4393c'
+                          }
+                        }}>
+                        <Typography variant="body2">{size}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+
+
+                {/* Số lượng & Thêm vào giỏ hàng */}
                 <Box sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  border: '1px solid #e1e1e1',
-                  borderRadius: '5px'
+                  gap: 2
                 }}>
+                  {/* Điều chỉnh số lượng */}
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: '1px solid #e1e1e1',
+                    borderRadius: '5px'
+                  }}>
+                    <Button
+                      sx={{ minWidth: '20px', padding: '5px 12px' }}
+                      onClick={handleDecrease}
+                    >–</Button>
+                    <Input
+                      value={quantity}
+                      readOnly
+                      sx={{
+                        width: '30px',
+                        textAlign: 'center',
+                        fontSize: '16px',
+                        border: 'none',
+                        '& input': { textAlign: 'center' },
+                        '&:before': {
+                          borderBottom: 'none !important'
+                        },
+                        '&:hover:before': {
+                          borderBottom: 'none !important'
+                        },
+                        '&:after': {
+                          borderBottom: 'none !important'
+                        }
+                      }}
+                    />
+                    <Button
+                      sx={{ minWidth: '20px', padding: '5px 12px' }}
+                      onClick={handleIncrease}
+                    >+</Button>
+                  </Box>
+
+                  {/* Nút Thêm vào giỏ hàng */}
                   <Button
-                    sx={{ minWidth: '20px', padding: '5px 12px' }}
-                    onClick={handleDecrease}
-                  >–</Button>
-                  <Input
-                    value={quantity}
-                    readOnly
+                    variant="contained"
+                    size="medium"
+                    endIcon={<AddShoppingCartIcon />}
                     sx={{
-                      width: '30px',
-                      textAlign: 'center',
-                      fontSize: '16px',
-                      border: 'none',
-                      '& input': { textAlign: 'center' },
-                      '&:before': {
-                        borderBottom: 'none !important'
-                      },
-                      '&:hover:before': {
-                        borderBottom: 'none !important'
-                      },
-                      '&:after': {
-                        borderBottom: 'none !important'
-                      }
+                      p: '10px 20px',
+                      backgroundColor: '#000000',
+                      border: '1px solid #000000',
+                      color: '#fff',
+                      transition: '0.3s',
+                      '&:hover': { backgroundColor: '#e6e6e6', color: '#000000', boxShadow: 'none' }
                     }}
-                  />
-                  <Button
-                    sx={{ minWidth: '20px', padding: '5px 12px' }}
-                    onClick={handleIncrease}
-                  >+</Button>
+                    onClick={handleAddToCart}
+                  >
+                    THÊM
+                  </Button>
                 </Box>
 
-                {/* Nút Thêm vào giỏ hàng */}
-                <Button
-                  variant="contained"
-                  size="medium"
-                  endIcon={<AddShoppingCartIcon />}
-                  sx={{
-                    p: '10px 20px',
-                    backgroundColor: '#000000',
-                    border: '1px solid #000000',
-                    color: '#fff',
-                    transition: '0.3s',
-                    '&:hover': { backgroundColor: '#e6e6e6', color: '#000000', boxShadow: 'none' }
-                  }}
+                {/* Link xem chi tiết */}
+                <Typography
+                  variant="body2"
+                  sx={{ textDecoration: 'underline', color: 'gray', cursor: 'pointer', mt: 1 }}
+                  onClick={handleClickProduct}
                 >
-                  THÊM
-                </Button>
-              </Box>
-
-              {/* Link xem chi tiết */}
-              <Typography
-                variant="body2"
-                sx={{ textDecoration: 'underline', color: 'gray', cursor: 'pointer', mt: 1 }}
-                onClick={handleClickProduct}
-              >
-                Xem chi tiết »
-              </Typography>
-            </Paper>
+                  Xem chi tiết »
+                </Typography>
+              </Paper>
+            </Box>
           </Box>
-        </Box>
-      </Dialog>
-
-    </Box>
+        </Dialog>
+      </Box>
+    </>
   )
 }
 

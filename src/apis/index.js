@@ -14,3 +14,36 @@ export const fetchProductDetailsAPI = async (productSlug) => {
   // Axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
+
+// export const fetchLoginAPI = async (data) => {
+//   const { email, password } = data
+//   const response = await axios.post(`${API_ROOT}/v1/users/login`, {
+//     email,
+//     password
+//   })
+//   return response.data
+// }
+
+export const authApi = {
+  login: async (data) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/v1/users/login`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  register: async (data) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/v1/users/register`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('token')
+  }
+}

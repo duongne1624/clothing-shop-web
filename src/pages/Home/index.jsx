@@ -1,12 +1,32 @@
-import { Box, Paper } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import Banner from './Banner/Banner'
 import Policies from './Policies/Policies'
 import VoucherList from './VoucherList/VoucherList'
 import Blog from './Blog/Blog'
-import ProductLists from '~/components/ProductLists/ProductLists'
+import ProductSlider from '~/components/ProductSlider/ProductSlider'
+import { fetchProductsAPI } from '~/apis'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
+  const [products, setProducts] = useState([])
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetchProductsAPI()
+      .then((products) => {
+        if (!products) {
+          //navigate('/not-found')
+        } else {
+          setProducts(products)
+        }
+      })
+      .catch(() => {
+        //navigate('/not-found')
+      })
+  }, [navigate])
+
   return (
     <>
       <Paper sx={{
@@ -43,8 +63,54 @@ function Home() {
           <Policies />
           {/***************************Ưu đãi**************************/}
           <VoucherList />
-          <ProductLists />
-          <Box>Sản phẩm bán chạy</Box>
+          {/*     Sản phẩm vừa xem         */}
+          <Paper sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            mt: 2,
+            p: 2,
+            alignItems: 'center',
+            maxWidth: '100%'
+          }}>
+            <Typography variant='h6'>SẢN PHẨM VỪA XEM</Typography>
+            <Typography
+              sx={{
+                textAlign: 'center',
+                color: '#878787',
+                fontStyle: 'italic',
+                margin: 0,
+                display: 'inline-block',
+                paddingTop: '15px',
+                position: 'relative',
+                minWidth: '150px',
+                '&::before': {
+                  content: '"///"',
+                  color: '#000',
+                  position: 'absolute',
+                  top: '-5px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '20px',
+                  textAlign: 'center',
+                  background: '#fff',
+                  zIndex: 9,
+                  fontSize: '14px'
+                },
+                '&::after': {
+                  content: '""',
+                  width: '120px',
+                  height: '1px',
+                  background: '#000',
+                  position: 'absolute',
+                  top: '5px',
+                  left: '15px'
+                }
+              }}
+            >
+            </Typography>
+            {/*    Danh sách sản phẩm vừa xem     */}
+            <ProductSlider products={products} />
+          </Paper>
           <Blog />
         </Box>
       </Paper>
