@@ -54,8 +54,8 @@ const ProductSlider = ({ products }) => {
         transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
         gap: '2%'
       }}>
-        {products.map((product) => (
-          <Box key={product.id} sx={{
+        {products?.map((product) => (
+          <Box key={product._id} sx={{
             flex: `0 0 ${(100 / itemsPerPage) - 1.7}%}`
           }}>
             <ProductCard product={product} />

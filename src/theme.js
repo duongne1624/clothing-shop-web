@@ -25,14 +25,14 @@ const theme = createTheme({
           height: '8px'
         },
         '::-webkit-scrollbar-thumb': {
-          backgroundColor: '#c4c4c4',
+          backgroundColor: '#5e5e5e',
           borderRadius: '4px'
         },
         '::-webkit-scrollbar-thumb:hover': {
-          backgroundColor: '#ababab'
+          backgroundColor: '#333333'
         },
         '::-webkit-scrollbar-track': {
-          backgroundColor: '#f1f1f1'
+          backgroundColor: '#b3b3b3'
         }
       }
     },
@@ -50,13 +50,13 @@ const theme = createTheme({
           color: '#000000',
           fontSize: '0.875rem',
           '.MuiOutlinedInput-notchedOutline': {
-            border: 'none'
+            border: '1px solid #919191'
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            border: 'none'
+            border: '1px solid #919191'
           },
           '& fieldset': {
-            border: 'none !important'
+            border: '1px solid #919191 !important'
           }
         }
       }

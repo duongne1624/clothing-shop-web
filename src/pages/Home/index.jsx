@@ -8,10 +8,13 @@ import ProductSlider from '~/components/ProductSlider/ProductSlider'
 import { fetchProductsAPI } from '~/apis'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useTitle from '~/hook/useTitle'
 
 function Home() {
   const [products, setProducts] = useState([])
   const navigate = useNavigate()
+
+  useTitle('Trang chủ | Clothing Shop')
 
   useEffect(() => {
     fetchProductsAPI()

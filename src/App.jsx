@@ -38,12 +38,12 @@ function App() {
                         backgroundColor: 'background.main',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 2
+                        gap: 2,
+                        scrollBehavior: 'smooth'
                       }}>
                         {/* <Home /> */}
                         <Page />
                         <Footer />
-                        <GlobalSnackbar />
                       </Box>
                     </>
                   ) : (
@@ -51,6 +51,7 @@ function App() {
                       <Page />
                     </>
                   )}
+                  <GlobalSnackbar />
                 </>
               } />
             )})}

@@ -49,7 +49,7 @@ function Header() {
           width={120}
           height={45}
           style={{ objectFit: 'cover', cursor: 'pointer' }}
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
         />
         <CategoryHoverMenu />
       </Box>
@@ -70,7 +70,17 @@ function Header() {
               border: '1px solid #000000',
               pr: '0',
               my: 1,
-              display: isMobile && !showSearch ? 'none' : 'flex'
+              display: isMobile && !showSearch ? 'none' : 'flex',
+              fontSize: '0.875rem',
+              '.MuiOutlinedInput-notchedOutline': {
+                border: 'none !important'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                border: 'none !important'
+              },
+              '& fieldset': {
+                border: 'none !important'
+              }
             }}
             endAdornment={
               <InputAdornment position='end'>

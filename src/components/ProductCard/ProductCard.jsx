@@ -79,7 +79,7 @@ function ProductCard({ product }) {
   const dispatch = useDispatch()
 
   const handleAddToCart = () => {
-    dispatch(addToCart({ product, quantity, selectedColor, selectedSize }))
+    dispatch(addToCart({ product, quantity, selectedColor, selectedSize, slug: product.slug }))
     setOpenDetail(false)
     dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
   }

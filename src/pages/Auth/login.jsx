@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
+      <Box sx={{ mt: 20, p: 6, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
         <Typography variant="h4" mb={3}>Đăng Nhập</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -60,15 +60,38 @@ export default function LoginPage() {
             {...register('email')}
             error={!!errors.email}
             helperText={errors.email?.message}
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: '1px solid black !important'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                border: '1px solid black !important'
+              },
+              '& fieldset': {
+                border: '1px solid black !important'
+              }
+            }}
           />
           <TextField
             label="Mật khẩu"
             type="password"
             fullWidth
+            variant="outlined"
             margin="normal"
             {...register('password')}
             error={!!errors.password}
             helperText={errors.password?.message}
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: '1px solid black !important'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                border: '1px solid black !important'
+              },
+              '& fieldset': {
+                border: '1px solid black !important'
+              }
+            }}
           />
           <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 2 }}>
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
