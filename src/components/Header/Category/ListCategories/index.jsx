@@ -1,7 +1,6 @@
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { categories } from '~/assets/categories'
 
 function ListCategories() {
 
@@ -12,7 +11,7 @@ function ListCategories() {
       }}>
         Danh mục
       </h2>
-      {categories.map((category) => (
+      {/* {categories.map((category) => (
         <Accordion key={category.label} sx={{
           boxShadow: 1,
           '&.Mui-expanded': { margin: 0 }
@@ -41,7 +40,7 @@ function ListCategories() {
             </AccordionSummary>
           ))}
         </Accordion>
-      ))}
+      ))} */}
     </>
   )
 }

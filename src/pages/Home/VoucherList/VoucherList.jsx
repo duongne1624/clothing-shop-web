@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import VoucherCard from './VoucherCard/VoucherCard'
-import { allLabel } from '~/assets/infos'
+import { allLabel } from '~/assets/js/infos'
 
 function VoucherList() {
   const nameVoucher = allLabel.voucherLabel

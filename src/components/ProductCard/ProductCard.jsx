@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { addToCart } from '~/redux/cartSlice'
 import { showSnackbar } from '~/redux/snackbarSlice'
+import { tagColors } from '~/assets/js/tagColor'
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -46,14 +47,6 @@ function ProductCard({ product }) {
       setSelectedSize(product.sizes[0])
     }
   }, [product])
-
-  const tagColors = {
-    SALE: '#ff5722',
-    NEW: '#4CAF50',
-    HOT: '#f44336',
-    LIMITED: '#3F51B5',
-    DEFAULT: '#757575'
-  }
 
   function formatCurrency(amount) {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')

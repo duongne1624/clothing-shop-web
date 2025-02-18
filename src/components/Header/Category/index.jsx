@@ -11,7 +11,6 @@ import Paper from '@mui/material/Paper'
 import MenuList from '@mui/material/MenuList'
 import ListItemText from '@mui/material/ListItemText'
 import ListCategories from './ListCategories'
-import { categories } from '~/assets/categories'
 
 const CustomMenu = styled(Menu)(() => ({
   '& .MuiPaper-root': {
@@ -93,27 +92,7 @@ const CategoryHoverMenu = () => {
               height: 'auto'
             }}
           >
-            {categories.map((category) => (
-              <>
-                <CustomMenuItem key={category.label}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <img width='20' height='20' src={category.icon} alt={category.alt} /> {category.label}
-                  </div>
-                  <Divider />
-                  <MenuList dense
-                    sx={{
-                      width: '100%'
-                    }}
-                  >
-                    {category.type.map((type) => (
-                      <MenuItem key={type.label}>
-                        <ListItemText>{type.label}</ListItemText>
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </CustomMenuItem>
-              </>
-            ))}
+            
           </CustomMenu>
         </>
       ) : (
