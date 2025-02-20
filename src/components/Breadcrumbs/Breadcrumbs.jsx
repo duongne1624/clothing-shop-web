@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import MuiBreadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 
-function Breadcrumbs({ category, categoryId, name }) {
+function Breadcrumbs({ category, categorySlug, name }) {
   return (
     <Box role="presentation" sx={{ pl: 2, py: 0.75 }}>
       <MuiBreadcrumbs aria-label="breadcrumb">
@@ -14,7 +14,7 @@ function Breadcrumbs({ category, categoryId, name }) {
           <Link
             underline="hover"
             color="inherit"
-            href={`/category/${categoryId}`}
+            href={`/category/${categorySlug}`}
             sx={{ '&:hover':{ textDecoration: 'none' } }}
           >
             {category}

@@ -70,7 +70,7 @@ function ProductDetails() {
             display: 'flex',
             flexDirection: 'column'
           }}>
-            <Breadcrumbs category={product.categoryId} categoryId={product.categoryId} name={product.name} />
+            <Breadcrumbs category={product.category.name} categorySlug={product.category.slug} name={product.name} />
             {/*     Thông tin sản phẩm         */}
             <ProductInfo product={product} />
             {/*     Sản phẩm vừa xem         */}

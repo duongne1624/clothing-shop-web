@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { authApi } from '~/apis'
 
 const schema = yup.object().shape({
-  email: yup.string().email('Email không hợp lệ!').required('Vui lòng nhập email!'),
+  username: yup.string().min(3, 'Username ít nhất 3 ký tự!').max(50, 'Username nhiều nhất 50 ký tự!').required('Vui lòng nhập username!'),
   password: yup.string().min(3, 'Mật khẩu ít nhất 3 ký tự!').required('Vui lòng nhập mật khẩu!')
 })
 
@@ -31,12 +31,12 @@ export default function LoginPage() {
       localStorage.setItem('token', response.token)
       navigate('/')
     } catch (error) {
-      if (error.message === 'Email not found!') {
-        setError('email', { type: 'manual', message: 'Email không tồn tại' })
+      if (error.message === 'Username not found!') {
+        setError('username', { type: 'manual', message: 'Username không tồn tại' })
       } else if (error.message === 'Password not corect!') {
         setError('password', { type: 'manual', message: 'Mật khẩu không đúng' })
       } else {
-        setError('email', { type: 'manual', message: 'Đã có lỗi xảy ra, vui lòng thử lại!' })
+        setError('username', { type: 'manual', message: 'Đã có lỗi xảy ra, vui lòng thử lại!' })
       }
     }
     setLoading(false)
@@ -54,12 +54,12 @@ export default function LoginPage() {
         <Typography variant="h4" mb={3}>Đăng Nhập</Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            label="Email"
+            label="Username"
             fullWidth
             margin="normal"
-            {...register('email')}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+            {...register('username')}
+            error={!!errors.username}
+            helperText={errors.username?.message}
             sx={{
               '& .MuiOutlinedInput-notchedOutline': {
                 border: '1px solid black !important'
