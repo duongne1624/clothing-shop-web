@@ -10,7 +10,8 @@ const theme = createTheme({
     primary: { main: '#000000' },
     secondary: { main: '#66d985' },
     headerButton: { main: '#000000' },
-    background: { default: '#f8f8f8', footer: '#ffffff' }
+    background: { default: '#f8f8f8', footer: '#ffffff' },
+    badge: { main: '#737373' }
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
@@ -20,9 +21,11 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        scrollbarWidth: 'none', // Firefox
+        '&::-webkit-scrollbar': { display: 'none' }, // Chrome, Safari
         '::-webkit-scrollbar': {
-          width: '8px',
-          height: '8px'
+          // width: '8px',
+          // height: '8px'
         },
         '::-webkit-scrollbar-thumb': {
           backgroundColor: '#5e5e5e',

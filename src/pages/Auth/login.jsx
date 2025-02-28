@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { TextField, Button, Box, Typography, Container } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { authApi } from '~/apis'
+import { useDispatch } from 'react-redux'
+import { loginSuccess } from '~/redux/authSlide'
 
 const schema = yup.object().shape({
   username: yup.string().min(3, 'Username ít nhất 3 ký tự!').max(50, 'Username nhiều nhất 50 ký tự!').required('Vui lòng nhập username!'),
@@ -13,6 +15,8 @@ const schema = yup.object().shape({
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const {
     register,
     handleSubmit,
@@ -29,11 +33,17 @@ export default function LoginPage() {
     try {
       const response = await authApi.login(data)
       localStorage.setItem('token', response.token)
-      navigate('/')
+      dispatch(loginSuccess(response.user))
+
+      if (response.user.role === 'admin') {
+        navigate('/admin/dashboard')
+      } else {
+        navigate('/')
+      }
     } catch (error) {
       if (error.message === 'Username not found!') {
         setError('username', { type: 'manual', message: 'Username không tồn tại' })
-      } else if (error.message === 'Password not corect!') {
+      } else if (error.message === 'Password not correct!') {
         setError('password', { type: 'manual', message: 'Mật khẩu không đúng' })
       } else {
         setError('username', { type: 'manual', message: 'Đã có lỗi xảy ra, vui lòng thử lại!' })
@@ -97,6 +107,12 @@ export default function LoginPage() {
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </Button>
         </form>
+        <Typography mt={2}>
+          Chưa có tài khoản?{'   '}
+          <Link to="/register" style={{ textDecoration: 'none', color: '#1cb05c' }}>
+            Đăng ký ngay
+          </Link>
+        </Typography>
       </Box>
     </Container>
   )

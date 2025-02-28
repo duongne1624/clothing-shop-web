@@ -12,16 +12,38 @@ import Cart from './Cart/Cart'
 
 function Header() {
   const navigate = useNavigate()
-
-  const handleClickSearch = () => {
-
-  }
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const [showSearch, setShowSearch] = useState(false)
+  const [searchKeyword, setSearchKeyword] = useState('')
+
+  const handleChange = (event) => {
+    setSearchKeyword(event.target.value)
+  }
+
+  const handleClickSearch = () => {
+    if (searchKeyword.trim().length < 1) return
+    navigate(`/Search/${searchKeyword}`)
+    handleCloseSearch()
+  }
+
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleClickSearch()
+    }
+  }
+
+  const handleOpenSearch = () => {
+    setShowSearch(true)
+  }
+
+  const handleCloseSearch = () => {
+    setShowSearch(false)
+  }
 
   return (
     <Box elevation={2} sx={{
+      position: 'relative',
       top: 0,
       left: 0,
       width: '100%',
@@ -33,7 +55,8 @@ function Header() {
       px: 2,
       backgroundColor: 'background.footer',
       boxShadow: '0 1px 5px 2px rgba(0, 0, 0, 0.15)',
-      height: (theme) => theme.shop.headerHeight
+      height: (theme) => theme.shop.headerHeight,
+      zIndex: 1000
     }}>
       <Box sx={{
         display: 'flex',
@@ -44,11 +67,11 @@ function Header() {
         }
       }}>
         <img
-          src="https://static.chotot.com/storage/APP_WRAPPER/logo/chotot-logo-appwrapper.png"
+          src="/logo-web.png"
           alt="logo"
           width={120}
           height={45}
-          style={{ objectFit: 'cover', cursor: 'pointer' }}
+          style={{ objectFit: 'cover', cursor: 'pointer', paddingTop: 2 }}
           onClick={() => navigate('/home')}
         />
         <CategoryHoverMenu />
@@ -63,6 +86,10 @@ function Header() {
       }}>
         {!isMobile ? (
           <OutlinedInput
+            value={searchKeyword}
+            onChange={handleChange}
+            onKeyDown={onKeyPress}
+            placeholder="Tìm kiếm..."
             sx={{
               height: '35px',
               color: 'black',
@@ -70,34 +97,83 @@ function Header() {
               border: '1px solid #000000',
               pr: '0',
               my: 1,
-              display: isMobile && !showSearch ? 'none' : 'flex',
               fontSize: '0.875rem',
               '.MuiOutlinedInput-notchedOutline': {
-                border: 'none !important'
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                border: 'none !important'
-              },
-              '& fieldset': {
                 border: 'none !important'
               }
             }}
             endAdornment={
               <InputAdornment position='end'>
-                <IconButton onClick={handleClickSearch}><SearchIcon /></IconButton>
+                <IconButton onClick={handleClickSearch}>
+                  <SearchIcon />
+                </IconButton>
               </InputAdornment>
             }
           />
         ) : (
-          <IconButton onClick={() => setShowSearch(true)}>
+          <IconButton onClick={handleOpenSearch}>
             <SearchIcon color='headerButton' />
           </IconButton>
         )}
 
         <Cart />
-
         <Account />
       </Box>
+
+      {/* Mobile Search Box (nằm trên header) */}
+      {isMobile && showSearch && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'start',
+            justifyContent: 'left',
+            zIndex: 9999
+          }}
+          onClick={handleCloseSearch}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              backgroundColor: 'white',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              height: (theme) => theme.shop.headerHeight
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <OutlinedInput
+              fullWidth
+              value={searchKeyword}
+              onChange={handleChange}
+              onKeyDown={onKeyPress}
+              autoFocus
+              placeholder="Tìm kiếm..."
+              sx={{
+                height: '40px',
+                fontSize: '1rem',
+                color: 'black',
+                backgroundColor: 'white',
+                border: '1px solid #ccc'
+              }}
+              endAdornment={
+                <InputAdornment position='end'>
+                  <IconButton onClick={handleClickSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </Box>
+        </Box>
+      )}
     </Box>
   )
 }

@@ -140,7 +140,7 @@ function ProductInfo({ product }) {
             <Typography variant='body2'>MSP: <strong>{product._id}</strong></Typography>
             |
             {/*        Loại          */}
-            <Typography variant='body2'>Loại: <strong>{product.categoryId}</strong></Typography>
+            <Typography variant='body2'>Loại: <strong>{product.category.name}</strong></Typography>
           </Box>
           {/*        Giá cả          */}
           <Typography variant='h6'>{formatCurrency(product.price)}₫</Typography>
