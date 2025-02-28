@@ -3,13 +3,9 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { showSnackbar } from '~/redux/snackbarSlice'
+import { getCouponByCode } from '~/apis'
 import CartItem from './CartItem/CartItem'
 import ReplyIcon from '@mui/icons-material/Reply'
-
-const validCoupons = {
-  'DISCOUNT10': { type: 'percent', value: 10 },
-  'SALE50': { type: 'fixed', value: 50000 }
-}
 
 function CartInfo() {
   const [couponCode, setCouponCode] = useState('')
@@ -28,17 +24,35 @@ function CartInfo() {
   const discountPrice = appliedCoupon ? discount : 0
   const totalPrice = originalPrice - discountPrice
 
-  const handleApplyCoupon = () => {
-    const coupon = validCoupons[couponCode.toUpperCase()]
-    if (coupon) {
-      if (coupon.type === 'percent') {
-        setDiscount((originalPrice * coupon.value) / 100)
-      } else if (coupon.type === 'fixed') {
-        setDiscount(coupon.value)
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      dispatch(showSnackbar({ message: 'Vui lòng nhập mã giảm giá!', severity: 'warning' }))
+      return
+    }
+
+    try {
+      const data = await getCouponByCode(couponCode)
+
+      if (data.coupon) {
+        const coupon = data.coupon
+
+        if (coupon.discountType === 'percentage') {
+          const discountAmount = (originalPrice * coupon.discountValue) / 100
+          setDiscount(Math.min(discountAmount, coupon.maxDiscount))
+        } else if (coupon.discountType === 'fixed' && originalPrice >= coupon.minOrderValue) {
+          setDiscount(coupon.discountValue)
+        } else {
+          dispatch(showSnackbar({ message: 'Không đủ điều kiện áp dụng mã!', severity: 'error' }))
+          return
+        }
+
+        setAppliedCoupon(coupon.code.toUpperCase())
+        dispatch(showSnackbar({ message: `Áp dụng mã giảm giá ${coupon.code} thành công!`, severity: 'success' }))
+      } else {
+        dispatch(showSnackbar({ message: 'Mã giảm giá không hợp lệ!', severity: 'error' }))
       }
-      setAppliedCoupon(couponCode.toUpperCase())
-    } else {
-      dispatch(showSnackbar({ message: 'Mã giảm giá không hợp lệ!', severity: 'error' }))
+    } catch (error) {
+      dispatch(showSnackbar({ message: `Lỗi khi kiểm tra mã giảm giá! ${error}`, severity: 'error' }))
     }
   }
 
@@ -145,10 +159,12 @@ function CartInfo() {
             color="primary"
           />
         )}
-        <Button variant="contained" sx={{
-          width: '100%',
-          mt: 2
-        }}>THANH TOÁN NGAY</Button>
+        <Button variant="contained"
+          onClick={() => navigate('/checkouts/cart')}
+          sx={{
+            width: '100%',
+            mt: 2
+          }}>THANH TOÁN NGAY</Button>
 
         <Box
           onClick={() => navigate('/home')}

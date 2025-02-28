@@ -5,30 +5,32 @@ import Policies from './Policies/Policies'
 import VoucherList from './VoucherList/VoucherList'
 import Blog from './Blog/Blog'
 import ProductSlider from '~/components/ProductSlider/ProductSlider'
+import { useDispatch } from 'react-redux'
+import { startLoading, stopLoading } from '~/redux/loadingSlide'
 import { fetchProductsAPI } from '~/apis'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import useTitle from '~/hook/useTitle'
 
 function Home() {
   const [products, setProducts] = useState([])
-  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useTitle('Trang chủ | Clothing Shop')
 
   useEffect(() => {
-    fetchProductsAPI()
-      .then((products) => {
-        if (!products) {
-          //navigate('/not-found')
-        } else {
-          setProducts(products)
+    const fetchProducts = async () => {
+      dispatch(startLoading())
+      try {
+        const productsData = await fetchProductsAPI()
+        if (productsData) {
+          setProducts(productsData)
         }
-      })
-      .catch(() => {
-        //navigate('/not-found')
-      })
-  }, [navigate])
+      } finally {
+        dispatch(stopLoading())
+      }
+    }
+    fetchProducts()
+  }, [dispatch])
 
   return (
     <>
@@ -66,7 +68,7 @@ function Home() {
           <Policies />
           {/***************************Ưu đãi**************************/}
           <VoucherList />
-          {/*     Sản phẩm vừa xem         */}
+          {/*     Sản phẩm mới         */}
           <Paper sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -75,7 +77,7 @@ function Home() {
             alignItems: 'center',
             maxWidth: '100%'
           }}>
-            <Typography variant='h6'>SẢN PHẨM VỪA XEM</Typography>
+            <Typography variant='h6'>SẢN PHẨM MỚI</Typography>
             <Typography
               sx={{
                 textAlign: 'center',

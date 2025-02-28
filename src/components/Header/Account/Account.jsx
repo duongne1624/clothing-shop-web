@@ -12,9 +12,12 @@ import { useTheme, useMediaQuery, Divider } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import { authApi } from '~/apis'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logout } from '~/redux/authSlide'
 
 function Account() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
 
@@ -33,7 +36,7 @@ function Account() {
 
   const handleLogout = () => {
     authApi.logout()
-    localStorage.removeItem('token')
+    dispatch(logout())
     navigate('/login')
   }
 
@@ -67,14 +70,20 @@ function Account() {
               'aria-labelledby': 'basic-button'
             }}
           >
-            <MenuItem onClick={() => navigate('/profile')} sx={
+            <MenuItem onClick={() => {
+              setAnchorEl(null)
+              navigate('/profile')
+            }} sx={
               {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1
               }
             }> <PortraitIcon /> Thông tin</MenuItem>
-            <MenuItem onClick={() => navigate('/my-order')} sx={
+            <MenuItem onClick={() => {
+              setAnchorEl(null)
+              navigate('/my-order')
+            }} sx={
               {
                 display: 'flex',
                 alignItems: 'center',

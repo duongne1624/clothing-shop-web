@@ -1,47 +1,57 @@
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
+import { useEffect, useState } from 'react'
+import { List, ListItemButton, ListItemText, Collapse, CircularProgress } from '@mui/material'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { getCategoriesAPI } from '~/apis' // API lấy danh sách danh mục
 
-function ListCategories() {
+const ListCategories = ({ onSelectCategory, onCloseMenu }) => {
+  const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [open, setOpen] = useState(null)
+
+  useEffect(() => {
+    getCategoriesAPI()
+      .then((data) => {
+        setCategories(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const handleToggle = (categoryId) => {
+    setOpen((prev) => (prev === categoryId ? null : categoryId))
+  }
+
+  const handleCategoryClick = (category) => {
+    onSelectCategory(category)
+    onCloseMenu()
+  }
 
   return (
-    <>
-      <h2 style={{
-        margin: '5px 10px'
-      }}>
-        Danh mục
-      </h2>
-      {/* {categories.map((category) => (
-        <Accordion key={category.label} sx={{
-          boxShadow: 1,
-          '&.Mui-expanded': { margin: 0 }
-        }}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            sx={{
-              padding: '5px 20px',
-              '&:hover': { backgroundColor: '#cccccc' },
-              minHeight: 'unset',
-              '&.Mui-expanded': { minHeight: 'unset' },
-              '& .MuiAccordionSummary-content.Mui-expanded': { margin: '12px 0 !important' } }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img width='20' height='20' src={category.icon} alt={category.alt} /> {category.label}
-            </div>
-          </AccordionSummary>
-          {category.type.map((type) => (
-            <AccordionSummary key={type.label} sx={{
-              padding: '5px 50px',
-              '&:hover': {
-                backgroundColor: '#cccccc'
-              }
-            }}>
-              {type.label}
-            </AccordionSummary>
-          ))}
-        </Accordion>
-      ))} */}
-    </>
+    <List>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        categories.map((category) => (
+          <div key={category.id}>
+            <ListItemButton onClick={() => handleToggle(category.id)}>
+              <ListItemText primary={category.name} />
+              {open === category.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </ListItemButton>
+
+            <Collapse in={open === category.id} timeout="auto" unmountOnExit>
+              {category.children.map((categoryChild) => (
+                <List key={categoryChild.id} component="div" disablePadding sx={{ pl: 3 }}>
+                  <ListItemButton onClick={() => handleCategoryClick(categoryChild.slug)}>
+                    <ListItemText primary={`${categoryChild.name}`} />
+                  </ListItemButton>
+                </List>
+              ))}
+            </Collapse>
+          </div>
+        ))
+      )}
+    </List>
   )
 }
 
