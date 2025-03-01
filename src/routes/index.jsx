@@ -12,6 +12,7 @@ import Register from '~/pages/Auth/register'
 import Cart from '~/pages/Cart/Cart'
 import CheckoutsCart from '~/pages/CheckoutsCart'
 import OrderSuccess from '~/pages/OrderSuccess'
+import ListCategories from '~/pages/Categories'
 import Categories from '~/pages/admin/Categories/Categories'
 import Search from '~/pages/Search/Search'
 import Profile from '~/pages/Users/_id'
@@ -22,6 +23,7 @@ import Users from '~/pages/admin/Users/Users'
 import Orders from '~/pages/admin/Orders/Orders'
 import Payments from '~/pages/admin/Payments/Payments'
 import Coupons from '~/pages/admin/Coupons/Coupons'
+import PaymentSuccess from '~/pages/CheckoutsCart/PaymentSuccess'
 
 const routes = (
   <>
@@ -29,11 +31,12 @@ const routes = (
     <Route element={<UserLayout />}>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/categories/:slug" element={<Categories />} />
+      <Route path="/categories/:slug" element={<ListCategories />} />
       <Route path="/search/:keyword" element={<Search />} />
       <Route path="/product-details/:slug" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/my-order" element={<MyOrder />} />
     </Route>

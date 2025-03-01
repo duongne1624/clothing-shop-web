@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import { showSnackbar } from '~/redux/snackbarSlice'
-import { getCouponByCode, createOrder } from '~/apis'
+import { getCouponByCode, createOrder, paymentOrder } from '~/apis'
 import { clearCart } from '~/redux/cartSlice'
 
 const paymentMethods = [
@@ -15,7 +15,7 @@ const paymentMethods = [
 ]
 
 function Checkouts() {
-  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '', city: '', district: '', ward: '' })
+  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '' })
   const [couponCode, setCouponCode] = useState('')
   const [discount, setDiscount] = useState(0)
   const [appliedCoupon, setAppliedCoupon] = useState(null)
@@ -33,10 +33,7 @@ function Checkouts() {
       setUserInfo({
         name: user.name,
         phone: user.phone,
-        address: user.address,
-        city: user.city,
-        district: user.district,
-        ward: user.ward
+        address: user.address
       })
     }
   }, [user])
@@ -84,9 +81,13 @@ function Checkouts() {
     }
 
     const guestUserId = '67b8788713cd26fc51b408fe'
+    const redirecturl = `${window.location.origin}/payment-success`
 
     const orderData = {
       userId: user?.id || guestUserId,
+      name: user?.name,
+      phone: user?.phone,
+      address: user?.address,
       items: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -96,7 +97,8 @@ function Checkouts() {
       })),
       totalAmount: totalPrice,
       status: 'pending',
-      paymentMethod: paymentMethod
+      paymentMethod: paymentMethod,
+      redirecturl: redirecturl
     }
 
     try {
@@ -106,7 +108,12 @@ function Checkouts() {
         dispatch(clearCart())
         navigate(`/order-success/${response.order.insertedId}`)
       } else {
-        navigate(`/payment/${paymentMethod}`, { state: { orderData } })
+        const response = await paymentOrder(orderData)
+        if (response.paymentInfo.return_code === 1) {
+          window.location.href = response.paymentInfo.order_url
+        } else {
+          dispatch(showSnackbar({ message: 'Tạo đơn hàng thất bại! Vui lòng chọn phương thức thanh toán khác', severity: 'error' }))
+        }
       }
     } catch (error) {
       dispatch(showSnackbar({ message: error.message || 'Đặt hàng thất bại!', severity: 'error' }))

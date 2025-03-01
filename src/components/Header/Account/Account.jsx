@@ -12,7 +12,7 @@ import { useTheme, useMediaQuery, Divider } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import { authApi } from '~/apis'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '~/redux/authSlide'
 
 function Account() {
@@ -20,11 +20,11 @@ function Account() {
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
+  const { user } = useSelector(state => state.auth)
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  const token = localStorage.getItem('token')
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -42,7 +42,7 @@ function Account() {
 
   return (
     <div>
-      {token ? (
+      {user ? (
         <>
           {!isMobile ? (
             <Button
