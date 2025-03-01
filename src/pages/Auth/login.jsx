@@ -5,7 +5,7 @@ import * as yup from 'yup'
 import { TextField, Button, Box, Typography, Container } from '@mui/material'
 import { useNavigate, Link } from 'react-router-dom'
 import { authApi } from '~/apis'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginSuccess } from '~/redux/authSlide'
 
 const schema = yup.object().shape({
@@ -16,6 +16,7 @@ const schema = yup.object().shape({
 export default function LoginPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { user } = useSelector(state => state.auth)
 
   const {
     register,
@@ -32,7 +33,6 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const response = await authApi.login(data)
-      localStorage.setItem('token', response.token)
       dispatch(loginSuccess(response.user))
 
       if (response.user.role === 'admin') {
@@ -53,10 +53,10 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    if (user) {
       navigate('/')
     }
-  }, [navigate])
+  }, [user, navigate])
 
   return (
     <Container maxWidth="sm">

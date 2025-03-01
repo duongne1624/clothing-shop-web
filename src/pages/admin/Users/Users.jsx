@@ -13,6 +13,12 @@ const userSchema = yup.object().shape({
   email: yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
   phone: yup.string().matches(/^\d{10,11}$/, 'Số điện thoại không hợp lệ').required('Số điện thoại là bắt buộc')
 })
+const userUpdateSchema = yup.object().shape({
+  name: yup.string().required('Họ và tên là bắt buộc'),
+  username: yup.string().required('Username là bắt buộc'),
+  email: yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
+  phone: yup.string().matches(/^\d{10,11}$/, 'Số điện thoại không hợp lệ').required('Số điện thoại là bắt buộc')
+})
 
 export default function Users() {
   const [users, setUsers] = useState([])
@@ -50,7 +56,11 @@ export default function Users() {
 
   const validateUser = async (user) => {
     try {
-      await userSchema.validate(user, { abortEarly: false })
+      if (editingUser._id) {
+        await userUpdateSchema.validate(user, { abortEarly: false })
+      } else {
+        await userSchema.validate(user, { abortEarly: false })
+      }
       setErrors({})
       return true
     } catch (err) {
@@ -68,7 +78,8 @@ export default function Users() {
     setOpenDialog(true)
   }
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
+    await userApi.deleteUser(editingUser._id)
     setUsers(users.filter(user => user._id !== editingUser._id))
     setOpenDialog(false)
     setEditingUser(null)
@@ -80,7 +91,7 @@ export default function Users() {
   }
 
   const handleAddUser = () => {
-    setEditingUser({ name: '', username: '', email: '', phone: '', role: 'customer' })
+    setEditingUser({ name: '', username: '', email: '', phone: '' })
     setOpenDialog(true)
   }
 
@@ -92,7 +103,12 @@ export default function Users() {
     if (!(await validateUser(editingUser))) return
 
     if (editingUser._id) {
-      await userApi.updateUser(editingUser._id, editingUser)
+      await userApi.updateUser(editingUser._id, {
+        name: editingUser.name,
+        username: editingUser.username,
+        email: editingUser.email,
+        phone: editingUser.phone
+      })
       setUsers(users.map(user => (user._id === editingUser._id ? editingUser : user)))
     } else {
       const newUser = await userApi.addUser(editingUser)
@@ -176,7 +192,11 @@ export default function Users() {
         <DialogContent>
           <TextField label="Họ và tên" fullWidth margin="dense" value={editingUser?.name || ''} onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })} error={!!errors.name} helperText={errors.name} />
           <TextField label="Username" fullWidth margin="dense" value={editingUser?.username || ''} onChange={(e) => setEditingUser({ ...editingUser, username: e.target.value })} error={!!errors.username} helperText={errors.username} />
-          <TextField label="Password" fullWidth margin="dense" value={editingUser?.password || ''} onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })} error={!!errors.password} helperText={errors.password} />
+          {editingUser?._id ? (
+            <TextField label="Password" type='hidden' value={editingUser?.password} />
+          ) : (
+            <TextField label="Password" password fullWidth margin="dense" value={editingUser?.password || ''} onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })} error={!!errors.password} helperText={errors.password} />
+          )}
           <TextField label="Email" fullWidth margin="dense" value={editingUser?.email || ''} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} error={!!errors.email} helperText={errors.email} />
           <TextField label="Số điện thoại" fullWidth margin="dense" value={editingUser?.phone || ''} onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })} error={!!errors.phone} helperText={errors.phone} />
         </DialogContent>

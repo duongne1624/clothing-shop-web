@@ -72,14 +72,10 @@ export default function AdminDashboard() {
     setEditingItem(null)
   }
 
-  const handleDelete = async (id, isProduct) => {
-    if (isProduct) {
-      await productApi.deleteProduct(id)
-      setProducts(products.filter(prod => prod._id !== id))
-    } else {
-      await categoryApi.deleteCategory(id)
-      setCategories(categories.filter(cat => cat._id !== id))
-    }
+  const handleDelete = async (id) => {
+    console.log('deleted! ', id)
+    // await productApi.deleteProduct(id)
+    // setProducts(products.filter(prod => prod._id !== id))
   }
 
   const handleEdit = (item) => {
@@ -90,6 +86,10 @@ export default function AdminDashboard() {
   const handleAddItem = (isProduct) => {
     setEditingItem(isProduct ? { name: '', slug: '', description: '', price: 0, stock: 0, categoryId: '' } : { name: '', slug: '', description: '' })
     setOpenDialog(true)
+  }
+
+  function formatCurrency(amount) {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
   return (
@@ -122,14 +122,14 @@ export default function AdminDashboard() {
             {products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(product => (
               <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>{product.price}</TableCell>
+                <TableCell>{formatCurrency(product.price)}</TableCell>
                 <TableCell>{product.sold}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleEdit(product)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(product._id, true)}>
+                  <IconButton color="error" onClick={() => handleDelete(product._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>

@@ -51,6 +51,11 @@ export const getUsers = async () => {
   return response.data
 }
 
+export const paymentOrder = async (orderData) => {
+  const response = await axios.post(`${API_ROOT}/v1/payments`, orderData)
+  return response.data
+}
+
 // Login, register, logout
 export const authApi = {
   login: async (data) => {
