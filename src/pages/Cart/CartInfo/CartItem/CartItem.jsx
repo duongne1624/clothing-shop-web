@@ -4,22 +4,22 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { editquantity, removeFromCart } from '~/redux/cartSlice'
 import ClearIcon from '@mui/icons-material/Clear'
-import { fetchProductDetailsAPI } from '~/apis'
+import { fetchProductDetailsAPIById } from '~/apis'
 
 function CartItem({ product }) {
   const [quantity, setQuantity] = useState(product.quantity)
   const [price, setPrice] = useState(product.price * product.quantity)
   const [isRemoving, setIsRemoving] = useState(false)
-  const [stock, setStock] = useState()
+  const [stock, setStock] = useState(1)
 
-  const slug = product.slug
+  const id = product.id
 
   useEffect(() => {
-    fetchProductDetailsAPI(slug)
+    fetchProductDetailsAPIById(id)
       .then(product => {
         setStock(product.stock)
       })
-  }, [slug])
+  }, [id])
 
   const navigate = useNavigate()
 

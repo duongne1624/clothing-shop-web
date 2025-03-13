@@ -2,7 +2,7 @@ import { Box, Paper, Typography } from '@mui/material'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
-import { fetchProductDetailsAPI, fetchProductsAPI } from '~/apis'
+import { fetchProductDetailsAPI, fetchProductsAPI, couponApi } from '~/apis'
 import ProductSlider from '~/components/ProductSlider/ProductSlider'
 import ProductInfo from './ProductInfo/ProductInfo'
 import useTitle from '~/hook/useTitle'
@@ -10,6 +10,7 @@ import useTitle from '~/hook/useTitle'
 function ProductDetails() {
   const [product, setProduct] = useState(null)
   const [products, setProducts] = useState([])
+  const [coupons, setCoupons] = useState([])
 
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -48,6 +49,21 @@ function ProductDetails() {
       })
   }, [navigate])
 
+  // Lấy danh sách giảm giá
+  useEffect(() => {
+    couponApi.getCoupons()
+      .then((coupons) => {
+        if (!coupons) {
+          navigate('/')
+        } else {
+          setCoupons(coupons)
+        }
+      })
+      .catch(() => {
+        navigate('/')
+      })
+  }, [navigate])
+
   useTitle(`Thông tin sản phẩm | ${product?.name}`)
 
   return (
@@ -72,7 +88,7 @@ function ProductDetails() {
           }}>
             <Breadcrumbs category={product.category.name} categorySlug={product.category.slug} name={product.name} />
             {/*     Thông tin sản phẩm         */}
-            <ProductInfo product={product} />
+            <ProductInfo product={product} coupons={coupons} />
             {/*     Sản phẩm vừa xem         */}
             <Paper sx={{
               display: 'flex',

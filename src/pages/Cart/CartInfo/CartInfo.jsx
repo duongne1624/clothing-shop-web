@@ -36,17 +36,17 @@ function CartInfo() {
       if (data.coupon) {
         const coupon = data.coupon
 
-        if (coupon.discountType === 'percentage') {
-          const discountAmount = (originalPrice * coupon.discountValue) / 100
+        if (coupon.type === 'percentage') {
+          const discountAmount = (originalPrice * coupon.value) / 100
           setDiscount(Math.min(discountAmount, coupon.maxDiscount))
-        } else if (coupon.discountType === 'fixed' && originalPrice >= coupon.minOrderValue) {
-          setDiscount(coupon.discountValue)
+        } else if (coupon.type === 'fixed' && originalPrice >= coupon.minOrder) {
+          setDiscount(coupon.value)
         } else {
           dispatch(showSnackbar({ message: 'Không đủ điều kiện áp dụng mã!', severity: 'error' }))
           return
         }
 
-        setAppliedCoupon(coupon.code.toUpperCase())
+        setAppliedCoupon(couponCode.toUpperCase())
         dispatch(showSnackbar({ message: `Áp dụng mã giảm giá ${coupon.code} thành công!`, severity: 'success' }))
       } else {
         dispatch(showSnackbar({ message: 'Mã giảm giá không hợp lệ!', severity: 'error' }))

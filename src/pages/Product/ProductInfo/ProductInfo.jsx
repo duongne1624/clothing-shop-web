@@ -7,12 +7,14 @@ import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
 import Coupon from '~/pages/Product/Coupon/Coupon'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import { useNavigate } from 'react-router-dom'
 
-function ProductInfo({ product }) {
+function ProductInfo({ product, coupons }) {
   const [quantity, setQuantity] = useState(1)
   const [selectedColor, setSelectedColor] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
   const [image, setImage] = useState(null)
+  const navigate = useNavigate()
 
   const allImages = product?.colors.flatMap(color => color.images)
 
@@ -53,6 +55,11 @@ function ProductInfo({ product }) {
   const handleAddToCart = () => {
     dispatch(addToCart({ product, quantity, selectedColor, selectedSize }))
     dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
+  }
+
+  const handleClickBuy = () => {
+    const encodedColor = encodeURIComponent(JSON.stringify(selectedColor))
+    navigate(`/checkouts/product?productId=${product?._id}&image=${image}&name=${product?.name}&quantity=${quantity}&size=${selectedSize}&color=${encodedColor}&price=${product?.price}`)
   }
 
   return (
@@ -145,7 +152,7 @@ function ProductInfo({ product }) {
           {/*        Giá cả          */}
           <Typography variant='h6'>{formatCurrency(product.price)}₫</Typography>
           {/*        Khuyến mãi - ưu đãi         */}
-          <Coupon />
+          <Coupon coupons={coupons} />
           {/*             Màu sắc               */}
           <Box>
             <Typography variant="body2">Màu sắc: <strong>{selectedColor ? selectedColor.name : 'Chưa chọn'}</strong></Typography>
@@ -279,6 +286,7 @@ function ProductInfo({ product }) {
               </Button>
               {/* Mua ngay */}
               <Button
+              onClick={handleClickBuy}
                 variant='contained' size='small'
                 sx={{
                   p: '10px 30px'

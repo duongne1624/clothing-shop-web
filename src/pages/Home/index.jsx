@@ -113,8 +113,9 @@ function Home() {
               }}
             >
             </Typography>
-            {/*    Danh sách sản phẩm vừa xem     */}
+            {/*    Danh sách sản phẩm mới     */}
             <ProductSlider products={products} />
+            {/* <ProductDisplay products={products} /> */}
           </Paper>
           <Blog />
         </Box>

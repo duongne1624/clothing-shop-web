@@ -51,11 +51,6 @@ export const getUsers = async () => {
   return response.data
 }
 
-export const paymentOrder = async (orderData) => {
-  const response = await axios.post(`${API_ROOT}/v1/payments`, orderData)
-  return response.data
-}
-
 // Login, register, logout
 export const authApi = {
   login: async (data) => {
@@ -191,6 +186,93 @@ export const productApi = {
   deleteProduct: async (id) => {
     try {
       const response = await axios.delete(`${API_ROOT}/v1/products/${id}`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  }
+}
+
+// Coupons
+export const couponApi = {
+  getCoupons: async () => {
+    try {
+      const response = await axios.get(`${API_ROOT}/v1/coupons`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  createCoupon: async (data) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/v1/coupons`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  updateCoupon: async (id, data) => {
+    try {
+      const response = await axios.put(`${API_ROOT}/v1/coupons/${id}`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  deleteCoupon: async (id) => {
+    try {
+      const response = await axios.delete(`${API_ROOT}/v1/coupons/${id}`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  }
+}
+
+// Orders
+export const orderApi = {
+  getOrders: async () => {
+    try {
+      const response = await axios.get(`${API_ROOT}/v1/orders`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  createOrder: async (data) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/v1/orders`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  updateOrder: async (id, data) => {
+    try {
+      const response = await axios.put(`${API_ROOT}/v1/orders/${id}`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  updateStatusOrder: async (id) => {
+    try {
+      const response = await axios.patch(`${API_ROOT}/v1/orders/${id}/status`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  deleteOrder: async (id) => {
+    try {
+      const response = await axios.delete(`${API_ROOT}/v1/orders/${id}`)
       return response.data
     } catch (error) {
       throw error.response?.data || { message: 'Lỗi không xác định' }

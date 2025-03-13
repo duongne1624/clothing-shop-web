@@ -5,11 +5,13 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import { userApi } from '~/apis'
 import * as yup from 'yup'
+import { useDispatch } from 'react-redux'
+import { showSnackbar } from '~/redux/snackbarSlice'
 
 const userSchema = yup.object().shape({
   name: yup.string().required('Họ và tên là bắt buộc'),
   username: yup.string().required('Username là bắt buộc'),
-  password: yup.string().required('Password là bắt buộc'),
+  password: yup.string().min(6, 'Mật khẩu ít nhất 6 ký tự').required('Password là bắt buộc'),
   email: yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
   phone: yup.string().matches(/^\d{10,11}$/, 'Số điện thoại không hợp lệ').required('Số điện thoại là bắt buộc')
 })
@@ -30,6 +32,8 @@ export default function Users() {
   const [openDialog, setOpenDialog] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
   const [errors, setErrors] = useState({})
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     userApi.getUsers().then(setUsers)
@@ -87,11 +91,13 @@ export default function Users() {
 
   const handleEdit = (user) => {
     setEditingUser(user)
+    setErrors({})
     setOpenDialog(true)
   }
 
   const handleAddUser = () => {
     setEditingUser({ name: '', username: '', email: '', phone: '' })
+    setErrors({})
     setOpenDialog(true)
   }
 
@@ -110,9 +116,11 @@ export default function Users() {
         phone: editingUser.phone
       })
       setUsers(users.map(user => (user._id === editingUser._id ? editingUser : user)))
+      dispatch(showSnackbar({ message: 'Thay đổi thông tin người dùng thành công!', severity: 'success' }))
     } else {
       const newUser = await userApi.addUser(editingUser)
       setUsers([...users, newUser])
+      dispatch(showSnackbar({ message: 'Thêm mới người dùng thành công!', severity: 'success' }))
     }
     setOpenDialog(false)
     setEditingUser(null)
