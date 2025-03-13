@@ -8,6 +8,7 @@ import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import HistoryIcon from '@mui/icons-material/History'
 import PortraitIcon from '@mui/icons-material/Portrait'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import { useTheme, useMediaQuery, Divider } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import { authApi } from '~/apis'
@@ -39,6 +40,8 @@ function Account() {
     dispatch(logout())
     navigate('/login')
   }
+
+  const isAdmin = user?.role === 'admin'
 
   return (
     <div>
@@ -91,6 +94,21 @@ function Account() {
               }
             }> <HistoryIcon /> Xem lịch sử đơn hàng</MenuItem>
             <Divider />
+            {isAdmin && (
+              <>
+                <MenuItem onClick={() => {
+                  setAnchorEl(null)
+                  navigate('/admin')
+                }} sx={
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }
+                }> <ManageAccountsIcon /> Trang quản lý</MenuItem>
+                <Divider />
+              </>
+            )}
             <MenuItem onClick={handleLogout} sx={
               {
                 display: 'flex',

@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import { showSnackbar } from '~/redux/snackbarSlice'
-import { getCouponByCode, createOrder, paymentOrder } from '~/apis'
-import { clearCart } from '~/redux/cartSlice'
+import { getCouponByCode, createOrder } from '~/apis'
 
 const paymentMethods = [
   { id: 'cod', label: 'Thanh toán khi giao hàng (COD)', icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6' },
@@ -54,11 +53,11 @@ function Checkouts() {
       if (data.coupon) {
         const coupon = data.coupon
 
-        if (coupon.discountType === 'percentage') {
-          const discountAmount = (originalPrice * coupon.discountValue) / 100
+        if (coupon.type === 'percentage') {
+          const discountAmount = (originalPrice * coupon.value) / 100
           setDiscount(Math.min(discountAmount, coupon.maxDiscount))
-        } else if (coupon.discountType === 'fixed' && originalPrice >= coupon.minOrderValue) {
-          setDiscount(coupon.discountValue)
+        } else if (coupon.type === 'fixed' && originalPrice >= coupon.minOrder) {
+          setDiscount(coupon.value)
         } else {
           dispatch(showSnackbar({ message: 'Không đủ điều kiện áp dụng mã!', severity: 'error' }))
           return
@@ -80,14 +79,28 @@ function Checkouts() {
       return
     }
 
-    const guestUserId = '67b8788713cd26fc51b408fe'
+    if (userInfo.name.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Tên không được để trống!', severity: 'error' }))
+      return
+    }
+
+    if (userInfo.phone.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Số điện thoại không được để trống!', severity: 'error' }))
+      return
+    }
+
+    if (userInfo.address.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Địa chỉ không được để trống!', severity: 'error' }))
+      return
+    }
+
     const redirecturl = `${window.location.origin}/payment-success`
 
     const orderData = {
-      userId: user?.id || guestUserId,
-      name: user?.name,
-      phone: user?.phone,
-      address: user?.address,
+      userId: user?._id || null,
+      name: userInfo?.name,
+      phone: userInfo?.phone,
+      address: userInfo?.address,
       items: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -95,28 +108,20 @@ function Checkouts() {
         color: item.color || '',
         price: item.price
       })),
-      totalAmount: totalPrice,
-      status: 'pending',
+      amount: originalPrice,
+      discountCode: appliedCoupon || '',
+      discountAmount: discountPrice || 0,
+      lastAmount: totalPrice,
       paymentMethod: paymentMethod,
       redirecturl: redirecturl
     }
 
-    try {
-      if (paymentMethod === 'cod') {
-        const response = await createOrder(orderData)
-        dispatch(showSnackbar({ message: 'Đặt hàng thành công!', severity: 'success' }))
-        dispatch(clearCart())
-        navigate(`/order-success/${response.order.insertedId}`)
-      } else {
-        const response = await paymentOrder(orderData)
-        if (response.paymentInfo.return_code === 1) {
-          window.location.href = response.paymentInfo.order_url
-        } else {
-          dispatch(showSnackbar({ message: 'Tạo đơn hàng thất bại! Vui lòng chọn phương thức thanh toán khác', severity: 'error' }))
-        }
-      }
-    } catch (error) {
-      dispatch(showSnackbar({ message: error.message || 'Đặt hàng thất bại!', severity: 'error' }))
+    const response = await createOrder(orderData)
+    if (response.order.paymentInfo.return_code === 1) {
+      dispatch(showSnackbar({ message: 'Tạo đơn hàng thành công!', severity: 'success' }))
+      window.location.href = response.order.paymentInfo.order_url
+    } else {
+      dispatch(showSnackbar({ message: 'Tạo đơn hàng thất bại! Vui lòng chọn phương thức thanh toán khác', severity: 'error' }))
     }
   }
 

@@ -4,7 +4,6 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import CategoryIcon from '@mui/icons-material/Category'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import MenuIcon from '@mui/icons-material/Menu'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import DiscountIcon from '@mui/icons-material/Discount'
@@ -12,6 +11,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import LogoutIcon from '@mui/icons-material/Logout'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import ShowChartIcon from '@mui/icons-material/ShowChart'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { Outlet } from 'react-router-dom'
@@ -23,11 +23,11 @@ import { logout } from '~/redux/authSlide'
 
 const menuItems = [
   { name: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
+  { name: 'statistical', label: 'Statistical', icon: <ShowChartIcon /> },
   { name: 'users', label: 'Users', icon: <AccountBoxIcon /> },
   { name: 'categories', label: 'Categories', icon: <CategoryIcon /> },
   { name: 'products', label: 'Products', icon: <ShoppingCartIcon /> },
   { name: 'orders', label: 'Orders', icon: <ReceiptIcon /> },
-  { name: 'payments', label: 'Payments', icon: <AttachMoneyIcon /> },
   { name: 'coupons', label: 'Coupons', icon: <DiscountIcon /> }
 ]
 

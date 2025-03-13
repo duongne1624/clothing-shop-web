@@ -96,6 +96,7 @@ export default function Categories() {
           label="Tìm kiếm danh mục"
           variant="outlined"
           value={search}
+          size='small'
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, mr: 2 }}
         />

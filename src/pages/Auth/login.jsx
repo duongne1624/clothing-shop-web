@@ -35,7 +35,11 @@ export default function LoginPage() {
       const response = await authApi.login(data)
       dispatch(loginSuccess(response.user))
 
-      if (response.user.role === 'admin') {
+      var millisecondsToWait = 10
+      await sleep(millisecondsToWait)
+
+      const isAdmin = response.user.role === 'admin'
+      if (isAdmin) {
         navigate('/admin/dashboard')
       } else {
         navigate('/')
@@ -50,6 +54,10 @@ export default function LoginPage() {
       }
     }
     setLoading(false)
+  }
+
+  async function sleep(msec) {
+    return new Promise(resolve => setTimeout(resolve, msec))
   }
 
   useEffect(() => {

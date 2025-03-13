@@ -58,7 +58,7 @@ function Footer() {
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom>
-              Đăng Ký Nhận Thông Tin
+              Đăng Ký Nhận Thông Báo
             </Typography>
             <input
               type="email"

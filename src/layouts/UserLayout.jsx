@@ -2,8 +2,6 @@ import { Outlet } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Header from '~/components/Header'
 import Footer from '~/components/Footer'
-import GlobalSnackbar from '~/components/GlobalSnackbar/GlobalSnackbar'
-import GlobalLoading from '~/components/GlobalLoading/GlobalLoading'
 
 export default function UserLayout() {
   return (
@@ -32,10 +30,6 @@ export default function UserLayout() {
         <Outlet />
         <Footer />
       </Box>
-
-      {/* Global Components */}
-      <GlobalSnackbar />
-      <GlobalLoading />
     </>
   )
 }

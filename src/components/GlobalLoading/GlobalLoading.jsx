@@ -1,10 +1,25 @@
 import { useSelector } from 'react-redux'
-import { CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 
 function GlobalLoading() {
   const isLoading = useSelector(state => state.loading.isLoading)
 
-  return isLoading ? <CircularProgress size={30} sx={{ position: 'fixed', top: 20, right: 20 }} /> : null
+  return isLoading ? (
+    <Box sx={{
+      width: '100vw',
+      height: '100vh',
+      position: 'absolute',
+      zIndex: 1500,
+      backgroundColor: '#b5b5b5',
+      display: 'flex',
+      alignContent: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      justifyItems: 'center'
+    }}>
+      <CircularProgress size={30}/>
+    </Box>
+  ) : null
 }
 
 export default GlobalLoading
