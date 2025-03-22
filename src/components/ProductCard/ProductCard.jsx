@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux'
 import { addToCart } from '~/redux/cartSlice'
 import { showSnackbar } from '~/redux/snackbarSlice'
 import { tagColors } from '~/assets/js/tagColor'
+import { API_ROOT } from '~/utils/constants'
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -77,6 +78,13 @@ function ProductCard({ product }) {
     dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
   }
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return ''
+    const url = String(imageUrl)
+    if (url.startsWith('http')) return url
+    return `${API_ROOT}${url}`
+  }
+
   const isMobile = window.innerWidth <= 768
 
   return (
@@ -91,9 +99,20 @@ function ProductCard({ product }) {
           borderRadius: '10px',
           position: 'relative',
           overflow: 'hidden',
-          '&:hover .search-icon': {
-            opacity: 1,
-            transform: 'translate(-50%, -50%) scale(1)'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+          transition: 'all 0.3s ease-in-out',
+          '&:hover': {
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            transform: 'translateY(-5px)',
+            '& .search-icon': {
+              opacity: 1,
+              transform: 'translate(-50%, -50%) scale(1)'
+            },
+            '& .cart-button': {
+              transform: 'translateY(-5px)',
+              backgroundColor: '#000000',
+              color: '#fff'
+            }
           }
         }}
         onClick={() => handleClickProduct()}
@@ -104,7 +123,8 @@ function ProductCard({ product }) {
             width: '100%',
             height: 'fit-content',
             overflow: 'hidden',
-            position: 'relative'
+            position: 'relative',
+            borderRadius: '8px'
           }}
         >
           {tag && (
@@ -115,23 +135,30 @@ function ProductCard({ product }) {
                 right: 8,
                 backgroundColor: tagColors[tag] || tagColors.DEFAULT,
                 color: '#fff',
-                padding: '4px 8px',
+                padding: '4px 12px',
                 fontSize: '12px',
-                borderRadius: '5px',
-                fontWeight: 'bold'
+                borderRadius: '20px',
+                fontWeight: 'bold',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                zIndex: 1
               }}
             >
               {tag}
             </Box>
           )}
 
-
           {/* Hình ảnh sản phẩm */}
           <img
-            src={imageFirst}
+            src={getImageUrl(imageFirst)}
             width="100%"
             height="100%"
-            style={{ display: 'block' }}
+            style={{
+              width: '100%',
+              height: 400,
+              objectFit: 'cover',
+              borderRadius: 8,
+              transition: 'transform 0.3s ease-in-out'
+            }}
             alt="product"
           />
 
@@ -144,14 +171,15 @@ function ProductCard({ product }) {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%) scale(0.8)',
-                backgroundColor: 'rgba(255,255, 255,0.9)',
+                backgroundColor: 'rgba(255,255, 255,0.95)',
                 color: '#000',
                 opacity: 0,
-                transition: '0.3s ease-in-out',
+                transition: 'all 0.3s ease-in-out',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 '&:hover': {
                   opacity: 1,
-                  transform: 'translate(-50%, -50%) scale(1)',
-                  backgroundColor: 'rgba(255,255, 255,0.9)',
+                  transform: 'translate(-50%, -50%) scale(1.1)',
+                  backgroundColor: '#ffffff',
                   color: '#000'
                 }
               }}
@@ -177,27 +205,54 @@ function ProductCard({ product }) {
               cursor: 'pointer',
               width: '40px',
               height: '40px',
-              transition: '0.3s ease-in-out',
-              '&:hover': { backgroundColor: '#fff', color: '#000' }
+              transition: 'all 0.3s ease-in-out',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              zIndex: 1,
+              '&:hover': {
+                backgroundColor: '#ffffff',
+                color: '#000',
+                transform: 'translateY(-5px) scale(1.1)'
+              }
             }}
             onClick={handleOpenBackdrop}
           >
             <LocalMallOutlinedIcon
               sx={{
                 fontSize: '20px',
-                transition: '0.3s ease-in-out'
+                transition: 'all 0.3s ease-in-out'
               }}
             />
           </Box>
         </Box>
 
         {/* Thông tin sản phẩm */}
-        <Typography variant="body2">
-          {product.name}
-        </Typography>
-        <Typography variant="subtitle2" fontWeight="bold">
-          {formatCurrency(product.price)}₫
-        </Typography>
+        <Box sx={{ p: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+              color: '#333',
+              mb: 0.5,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical'
+            }}
+          >
+            {product.name}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              color: '#000',
+              fontSize: '1.1rem'
+            }}
+          >
+            {formatCurrency(product.price)}₫
+          </Typography>
+        </Box>
 
         {/*          Dialog thêm sản phẩm vào giỏ hàng           */}
         <Dialog
@@ -219,7 +274,8 @@ function ProductCard({ product }) {
               },
               borderRadius: '12px',
               overflow: 'hidden',
-              boxShadow: 5
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              animation: 'slideUp 0.3s ease-out'
             }
           }}
           onClick={(e) => e.stopPropagation()}
@@ -269,7 +325,7 @@ function ProductCard({ product }) {
               gap: 2
             }}>
               <img
-                src={image}
+                src={getImageUrl(image)}
                 alt="product"
                 style={{
                   width: '100%',
@@ -332,7 +388,7 @@ function ProductCard({ product }) {
                           }
                         }}>
                         <img
-                          src={color.images[0]}
+                          src={getImageUrl(color.images[0])}
                           alt="variant"
                           style={{ width: '100%', borderRadius: '50%' }}
                         />

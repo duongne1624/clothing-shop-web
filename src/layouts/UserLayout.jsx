@@ -20,7 +20,7 @@ export default function UserLayout() {
       {/* Content */}
       <Box sx={{
         width: '100%',
-        marginTop: (theme) => theme.shop.headerHeight,
+        marginTop: '143px',
         backgroundColor: 'background.main',
         display: 'flex',
         flexDirection: 'column',

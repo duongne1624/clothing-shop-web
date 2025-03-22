@@ -8,6 +8,7 @@ import ImageListItem from '@mui/material/ImageListItem'
 import Coupon from '~/pages/Product/Coupon/Coupon'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import { useNavigate } from 'react-router-dom'
+import { API_ROOT } from '~/utils/constants'
 
 function ProductInfo({ product, coupons }) {
   const [quantity, setQuantity] = useState(1)
@@ -62,6 +63,13 @@ function ProductInfo({ product, coupons }) {
     navigate(`/checkouts/product?productId=${product?._id}&image=${image}&name=${product?.name}&quantity=${quantity}&size=${selectedSize}&color=${encodedColor}&price=${product?.price}`)
   }
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return ''
+    const url = String(imageUrl)
+    if (url.startsWith('http')) return url
+    return `${API_ROOT}${url}`
+  }
+
   return (
     <Box sx={{
       display: 'flex',
@@ -85,7 +93,7 @@ function ProductInfo({ product, coupons }) {
         height: 'fit-content',
         gap: 2
       }}>
-        <img src={image} width='100%' height='100%' />
+        <img src={getImageUrl(image)} width='100%' height='100%' />
         <ImageList sx={{
           width: '100%',
           height: 'auto',
@@ -106,8 +114,8 @@ function ProductInfo({ product, coupons }) {
               border: `1px solid ${image === item ? '#000000' : 'none'}`
             }}>
               <img
-                srcSet={item}
-                src={item}
+                srcSet={getImageUrl(item)}
+                src={getImageUrl(item)}
                 loading="lazy"
               />
             </ImageListItem>
@@ -174,7 +182,7 @@ function ProductInfo({ product, coupons }) {
                     }
                   }}>
                   <img
-                    src={color.images[0]}
+                    src={getImageUrl(color.images[0])}
                     alt="variant"
                     style={{ width: '100%', borderRadius: '50%' }}
                   />
@@ -286,7 +294,7 @@ function ProductInfo({ product, coupons }) {
               </Button>
               {/* Mua ngay */}
               <Button
-              onClick={handleClickBuy}
+                onClick={handleClickBuy}
                 variant='contained' size='small'
                 sx={{
                   p: '10px 30px'

@@ -96,7 +96,7 @@ function ProductDetails() {
               mt: 2,
               p: 2,
               alignItems: 'center',
-              maxWidth: '100%'
+              width: '100%'
             }}>
               <Typography variant='h6'>SẢN PHẨM VỪA XEM</Typography>
               <Typography

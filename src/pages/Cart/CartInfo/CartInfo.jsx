@@ -6,6 +6,7 @@ import { showSnackbar } from '~/redux/snackbarSlice'
 import { getCouponByCode } from '~/apis'
 import CartItem from './CartItem/CartItem'
 import ReplyIcon from '@mui/icons-material/Reply'
+import { API_ROOT } from '~/utils/constants'
 
 function CartInfo() {
   const [couponCode, setCouponCode] = useState('')
@@ -59,6 +60,13 @@ function CartInfo() {
   const handleRemoveCoupon = () => {
     setDiscount(0)
     setAppliedCoupon(null)
+  }
+
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return ''
+    const url = String(imageUrl)
+    if (url.startsWith('http')) return url
+    return `${API_ROOT}${url}`
   }
 
   return (

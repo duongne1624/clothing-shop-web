@@ -12,7 +12,7 @@ const GlobalSnackbar = () => {
       autoHideDuration={2000}
       onClose={() => dispatch(hideSnackbar())}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      sx={{ mt: 5 }}
+      sx={{ mt: 20 }}
     >
       <Alert severity={severity} onClose={() => dispatch(hideSnackbar())}>
         {message}

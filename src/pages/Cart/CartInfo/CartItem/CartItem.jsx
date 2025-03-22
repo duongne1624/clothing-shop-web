@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { editquantity, removeFromCart } from '~/redux/cartSlice'
 import ClearIcon from '@mui/icons-material/Clear'
 import { fetchProductDetailsAPIById } from '~/apis'
-
+import { API_ROOT } from '~/utils/constants'
 function CartItem({ product }) {
   const [quantity, setQuantity] = useState(product.quantity)
   const [price, setPrice] = useState(product.price * product.quantity)
@@ -57,6 +57,13 @@ function CartItem({ product }) {
     }, 300)
   }
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return ''
+    const url = String(imageUrl)
+    if (url.startsWith('http')) return url
+    return `${API_ROOT}${url}`
+  }
+
   return (
     <Box sx={{
       width: '100%',
@@ -66,7 +73,7 @@ function CartItem({ product }) {
       justifyItems: 'flex-start',
       gap: 1
     }}>
-      <img src={product.image} width='100px' />
+      <img src={getImageUrl(product.image)} width='100px' style={{ objectFit: 'cover' }} />
       {/*     Thông tin sản phẩm thêm     */}
       <Box sx={{
         width: '100%'
