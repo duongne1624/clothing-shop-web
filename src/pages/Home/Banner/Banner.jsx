@@ -4,9 +4,9 @@ function Banner() {
   return (
     <Box sx={{
       width: '100%',
-      height: '400px'
+      height: 'auto'
     }}>
-      <img src="/Images/Users/avartar-default.jpg" alt='banner' style={{ width: '100%', height: '100%' }} />
+      <img src="https://m.yodycdn.com/fit-in/filters:format(webp)/products/m8abtcxyha04wtqpe3vsu-kien-yody-in-life-3.jpg" alt='banner' style={{ width: '100%', height: '100%' }} />
     </Box>
   )
 }

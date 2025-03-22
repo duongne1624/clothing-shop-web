@@ -1,6 +1,22 @@
 import { Box, Container, Typography, Link, Grid } from '@mui/material'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { subscribeEmail } from '~/apis'
+import { showSnackbar } from '~/redux/snackbarSlice'
 
 function Footer() {
+  const [subscriberEmail, setSubscriberEmail] = useState()
+  const dispatch = useDispatch()
+
+  const subscribe = async () => {
+    try {
+      const result = await subscribeEmail(subscriberEmail)
+      dispatch(showSnackbar({ message: result.message, severity: 'success' }))
+    } catch (error) {
+      dispatch(showSnackbar({ message: error.response.data.message, severity: 'error' }))
+    }
+  }
+
   return (
     <Box
       component="footer"
@@ -62,6 +78,7 @@ function Footer() {
             </Typography>
             <input
               type="email"
+              onChange={(e) => setSubscriberEmail(e.target.value)}
               placeholder="Nhập email của bạn"
               style={{
                 width: '100%',
@@ -71,6 +88,7 @@ function Footer() {
               }}
             />
             <button
+              onClick={subscribe}
               style={{
                 marginTop: '8px',
                 width: '100%',

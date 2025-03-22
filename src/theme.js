@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
-const HEADER_HEIGHT = '45px'
+const HEADER_HEIGHT = '35px'
 
 const theme = createTheme({
   shop: {

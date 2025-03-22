@@ -27,6 +27,7 @@ import Orders from '~/pages/admin/Orders/Orders'
 import Coupons from '~/pages/admin/Coupons/Coupons'
 import PaymentSuccess from '~/pages/Checkouts/PaymentSuccess'
 import SalesStatistics from '~/pages/admin/SalesStatistics/SalesStatistics'
+import FashionNews from '~/pages/FashionNews'
 
 const routes = (
   <>
@@ -39,9 +40,10 @@ const routes = (
       <Route path="/product-details/:slug" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/order-success" element={<OrderSuccess />} />
+      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/my-order" element={<MyOrder />} />
+      <Route path="/fashion-news" element={<FashionNews />} />
     </Route>
 
     {/* Auth Routes */}

@@ -51,6 +51,11 @@ export const getUsers = async () => {
   return response.data
 }
 
+export const subscribeEmail = async (email) => {
+  const response = await axios.post(`${API_ROOT}/v1/subscribers/subscribe`, { email: email })
+  return response.data
+}
+
 // Login, register, logout
 export const authApi = {
   login: async (data) => {
@@ -183,6 +188,11 @@ export const productApi = {
     }
   },
 
+  uploadImage: async (data) => {
+    const response = await axios.post(`${API_ROOT}/v1/uploads`, data)
+    return response.data.url
+  },
+
   deleteProduct: async (id) => {
     try {
       const response = await axios.delete(`${API_ROOT}/v1/products/${id}`)
@@ -237,6 +247,24 @@ export const orderApi = {
   getOrders: async () => {
     try {
       const response = await axios.get(`${API_ROOT}/v1/orders`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  getOrderById: async (id) => {
+    try {
+      const response = await axios.get(`${API_ROOT}/v1/orders/${id}`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  getOrderByTranId: async (tranId) => {
+    try {
+      const response = await axios.get(`${API_ROOT}/v1/orders/findByTranId/${tranId}`)
       return response.data
     } catch (error) {
       throw error.response?.data || { message: 'Lỗi không xác định' }

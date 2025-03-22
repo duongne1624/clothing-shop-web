@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { TextField, Button, Box, Typography, Container } from '@mui/material'
+import { TextField, Button, Box, Typography, Container, Paper, InputAdornment, IconButton, Divider } from '@mui/material'
 import { useNavigate, Link } from 'react-router-dom'
 import { authApi } from '~/apis'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginSuccess } from '~/redux/authSlide'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import GoogleIcon from '@mui/icons-material/Google'
+import FacebookIcon from '@mui/icons-material/Facebook'
+import { motion } from 'framer-motion'
 
 const schema = yup.object().shape({
   username: yup.string().min(3, 'Username ít nhất 3 ký tự!').max(50, 'Username nhiều nhất 50 ký tự!').required('Vui lòng nhập username!'),
@@ -17,6 +22,8 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const {
     register,
@@ -26,8 +33,6 @@ export default function LoginPage() {
   } = useForm({
     resolver: yupResolver(schema)
   })
-
-  const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data) => {
     setLoading(true)
@@ -67,61 +72,152 @@ export default function LoginPage() {
   }, [user, navigate])
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 20, p: 6, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
-        <Typography variant="h4" mb={3}>Đăng Nhập</Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            label="Username"
-            fullWidth
-            margin="normal"
-            {...register('username')}
-            error={!!errors.username}
-            helperText={errors.username?.message}
+    <Box sx={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      py: 4
+    }}>
+      <Container maxWidth="sm">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Paper
+            elevation={3}
             sx={{
-              '& .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid black !important'
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid black !important'
-              },
-              '& fieldset': {
-                border: '1px solid black !important'
-              }
+              p: 4,
+              borderRadius: 2,
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
             }}
-          />
-          <TextField
-            label="Mật khẩu"
-            type="password"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            {...register('password')}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            sx={{
-              '& .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid black !important'
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid black !important'
-              },
-              '& fieldset': {
-                border: '1px solid black !important'
-              }
-            }}
-          />
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 2 }}>
-            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-          </Button>
-        </form>
-        <Typography mt={2}>
-          Chưa có tài khoản?{'   '}
-          <Link to="/register" style={{ textDecoration: 'none', color: '#1cb05c' }}>
-            Đăng ký ngay
-          </Link>
-        </Typography>
-      </Box>
-    </Container>
+          >
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
+                Chào mừng trở lại
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Đăng nhập để tiếp tục mua sắm
+              </Typography>
+            </Box>
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <TextField
+                label="Username"
+                fullWidth
+                margin="normal"
+                {...register('username')}
+                error={!!errors.username}
+                helperText={errors.username?.message}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: '#1cb05c'
+                    }
+                  }
+                }}
+              />
+              <TextField
+                label="Mật khẩu"
+                type={showPassword ? 'text' : 'password'}
+                fullWidth
+                margin="normal"
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: '#1cb05c'
+                    }
+                  }
+                }}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading}
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  py: 1.5,
+                  background: '#1cb05c',
+                  '&:hover': {
+                    background: '#169c4f'
+                  }
+                }}
+              >
+                {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              </Button>
+
+              <Box sx={{ textAlign: 'center', mb: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Chưa có tài khoản?{' '}
+                  <Link to="/register" style={{ color: '#1cb05c', textDecoration: 'none', fontWeight: 600 }}>
+                    Đăng ký ngay
+                  </Link>
+                </Typography>
+              </Box>
+
+              <Divider sx={{ my: 3 }}>
+                <Typography variant="body2" color="text.secondary">
+                  hoặc
+                </Typography>
+              </Divider>
+
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<GoogleIcon />}
+                  sx={{
+                    borderColor: '#db4437',
+                    color: '#db4437',
+                    '&:hover': {
+                      borderColor: '#db4437',
+                      background: 'rgba(219, 68, 55, 0.04)'
+                    }
+                  }}
+                >
+                  Google
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<FacebookIcon />}
+                  sx={{
+                    borderColor: '#4267B2',
+                    color: '#4267B2',
+                    '&:hover': {
+                      borderColor: '#4267B2',
+                      background: 'rgba(66, 103, 178, 0.04)'
+                    }
+                  }}
+                >
+                  Facebook
+                </Button>
+              </Box>
+            </form>
+          </Paper>
+        </motion.div>
+      </Container>
+    </Box>
   )
 }
