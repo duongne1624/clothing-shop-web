@@ -45,16 +45,38 @@ import { useDispatch } from 'react-redux'
 import { showSnackbar } from '~/redux/snackbarSlice'
 import { motion, AnimatePresence } from 'framer-motion'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DateTimePicker } from '@mui/x-date-pickers-pro'
+import { DatePicker } from '@mui/x-date-pickers-pro'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 
 const couponSchema = yup.object().shape({
   code: yup.string().required('Mã giảm giá là bắt buộc'),
   type: yup.string().oneOf(['percentage', 'fixed']).required('Loại giảm giá là bắt buộc'),
-  value: yup.number().required('Giá trị giảm giá là bắt buộc'),
+  value: yup.number()
+    .required('Giá trị giảm giá là bắt buộc')
+    .test('value-check', 'Giá trị giảm giá không hợp lệ', function(value) {
+      const type = this.parent.type
+      const minOrder = this.parent.minOrder
+
+      if (type === 'percentage') {
+        return value <= 100
+      } else if (type === 'fixed') {
+        return value < minOrder
+      }
+      return true
+    }),
   maxDiscount: yup.number().nullable(),
-  minOrder: yup.number().nullable(),
+  minOrder: yup.number()
+    .nullable()
+    .test('min-order-check', 'Giá trị đơn hàng tối thiểu phải lớn hơn giá trị giảm giá', function(value) {
+      const type = this.parent.type
+      const discountValue = this.parent.value
+
+      if (type === 'fixed' && value && discountValue) {
+        return value > discountValue
+      }
+      return true
+    }),
   usageLimit: yup.number().required('Số lần sử dụng tối đa là bắt buộc'),
   expiresAt: yup.date().nullable()
 })
@@ -172,15 +194,45 @@ export default function Coupons() {
   }
 
   const handleSave = async () => {
+    // Kiểm tra giá trị giảm giá trước khi validate
+    if (editingCoupon.type === 'percentage' && editingCoupon.value > 100) {
+      setErrors({
+        value: 'Giá trị giảm giá không được vượt quá 100%'
+      })
+      return
+    }
+
+    if (editingCoupon.type === 'fixed' && editingCoupon.minOrder && editingCoupon.value >= editingCoupon.minOrder) {
+      setErrors({
+        value: 'Giá trị giảm giá phải nhỏ hơn giá trị đơn hàng tối thiểu'
+      })
+      return
+    }
+
     if (!(await validateCoupon(editingCoupon))) return
 
     try {
+      // Chuẩn bị dữ liệu trước khi gửi lên API
+      const couponData = {
+        code: editingCoupon.code,
+        type: editingCoupon.type,
+        value: Number(editingCoupon.value),
+        usageLimit: Number(editingCoupon.usageLimit),
+        minOrder: editingCoupon.type === 'fixed' ? Number(editingCoupon.minOrder) : null,
+        maxDiscount: editingCoupon.type === 'percentage' ? Number(editingCoupon.maxDiscount) : null,
+        expiresAt: editingCoupon.expiresAt || null
+      }
+
+      if (couponData.expiresAt === null) delete couponData.expiresAt
+      if (couponData.minOrder === null) delete couponData.minOrder
+      if (couponData.maxDiscount === null) delete couponData.maxDiscount
+
       if (editingCoupon._id) {
-        await couponApi.updateCoupon(editingCoupon._id, editingCoupon)
-        setCoupons(coupons.map(coupon => (coupon._id === editingCoupon._id ? editingCoupon : coupon)))
+        await couponApi.updateCoupon(editingCoupon._id, couponData)
+        setCoupons(coupons.map(coupon => (coupon._id === editingCoupon._id ? { ...coupon, ...couponData } : coupon)))
         dispatch(showSnackbar({ message: 'Cập nhật mã giảm giá thành công!', severity: 'success' }))
       } else {
-        const newCoupon = await couponApi.addCoupon(editingCoupon)
+        const newCoupon = await couponApi.createCoupon(couponData)
         setCoupons([...coupons, newCoupon])
         dispatch(showSnackbar({ message: 'Thêm mã giảm giá thành công!', severity: 'success' }))
       }
@@ -420,7 +472,7 @@ export default function Coupons() {
           />
           {hasExpiry && (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
+              <DatePicker
                 label="Hạn sử dụng"
                 value={editingCoupon?.expiresAt ? dayjs(editingCoupon.expiresAt) : null}
                 onChange={(newValue) => setEditingCoupon({ ...editingCoupon, expiresAt: newValue?.toISOString() })}

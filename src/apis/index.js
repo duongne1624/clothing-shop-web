@@ -271,6 +271,15 @@ export const orderApi = {
     }
   },
 
+  getOrderByUserId: async (userId) => {
+    try {
+      const response = await axios.get(`${API_ROOT}/v1/orders/user/${userId}`)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
   createOrder: async (data) => {
     try {
       const response = await axios.post(`${API_ROOT}/v1/orders`, data)

@@ -29,7 +29,6 @@ function OrderSuccess() {
           item.image = product.colors[0].images[0]
           item.productName = product.name
         }))
-        console.log(result)
         setOrder(result)
       } catch (error) {
         console.error('Error fetching order:', error)
@@ -171,7 +170,7 @@ function OrderSuccess() {
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="subtitle2" color="text.secondary">Trạng thái thanh toán</Typography>
                   <Chip
-                    label={order.paymentStatus === 'success' ? 'Thành công' : 'Thất bại'}
+                    label={order.paymentStatus === 'success' ? 'Đã thanh toán' : order.paymentStatus === 'pending' ? 'Đang chờ' : 'Thất bại'}
                     color={getPaymentStatusColor(order.paymentStatus)}
                     size="small"
                     sx={{ mt: 1 }}
@@ -264,7 +263,7 @@ function OrderSuccess() {
             <Button
               variant="outlined"
               startIcon={<ShoppingBagIcon />}
-              onClick={() => navigate('/orders')}
+              onClick={() => navigate('/my-order')}
               sx={{
                 borderRadius: 2,
                 textTransform: 'none',

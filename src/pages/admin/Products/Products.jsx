@@ -34,7 +34,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment
+  InputAdornment,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -51,10 +54,15 @@ const productSchema = yup.object().shape({
   description: yup.string().required('Mô tả là bắt buộc'),
   price: yup.number().required('Giá là bắt buộc').min(0, 'Giá phải lớn hơn 0'),
   categoryId: yup.string().required('Danh mục là bắt buộc'),
-  images: yup.array().min(1, 'Ít nhất 1 hình ảnh').required('Hình ảnh là bắt buộc'),
+  stock: yup.number().required('Số lượng là bắt buộc').min(0, 'Số lượng phải lớn hơn 0'),
   sizes: yup.array().min(1, 'Ít nhất 1 kích thước').required('Kích thước là bắt buộc'),
-  colors: yup.array().min(1, 'Ít nhất 1 màu').required('Màu sắc là bắt buộc'),
-  stock: yup.number().required('Số lượng là bắt buộc').min(0, 'Số lượng phải lớn hơn 0')
+  colors: yup.array().of(
+    yup.object().shape({
+      name: yup.string().required('Tên màu là bắt buộc'),
+      colorCode: yup.string().required('Mã màu là bắt buộc'),
+      images: yup.array().min(1, 'Ít nhất 1 hình ảnh').required('Hình ảnh là bắt buộc')
+    })
+  ).min(1, 'Ít nhất 1 màu').required('Màu sắc là bắt buộc')
 })
 
 export default function Products() {
@@ -157,13 +165,109 @@ export default function Products() {
       description: '',
       price: 0,
       categoryId: '',
-      images: [],
+      stock: 0,
       sizes: [],
-      colors: [],
-      stock: 0
+      colors: [{
+        name: '',
+        colorCode: '#000000',
+        images: []
+      }]
     })
     setErrors({})
     setOpenDialog(true)
+  }
+
+  const handleAddColor = () => {
+    setEditingProduct({
+      ...editingProduct,
+      colors: [
+        ...editingProduct.colors,
+        {
+          name: '',
+          colorCode: '#000000',
+          images: []
+        }
+      ]
+    })
+  }
+
+  const handleRemoveColor = (index) => {
+    setEditingProduct({
+      ...editingProduct,
+      colors: editingProduct.colors.filter((_, i) => i !== index)
+    })
+  }
+
+  const handleColorChange = (index, field, value) => {
+    const newColors = [...editingProduct.colors]
+    newColors[index] = {
+      ...newColors[index],
+      [field]: value
+    }
+    setEditingProduct({
+      ...editingProduct,
+      colors: newColors
+    })
+  }
+
+  const handleAddImage = async (colorIndex, files) => {
+    try {
+      if (!files || files.length === 0) {
+        dispatch(showSnackbar({ message: 'Vui lòng chọn file ảnh!', severity: 'error' }))
+        return
+      }
+
+      const file = files[0]
+      // Kiểm tra kích thước file (tối đa 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        dispatch(showSnackbar({ message: 'Kích thước ảnh không được vượt quá 5MB!', severity: 'error' }))
+        return
+      }
+
+      // Kiểm tra định dạng file
+      if (!file.type.startsWith('image/')) {
+        dispatch(showSnackbar({ message: 'File phải là định dạng ảnh!', severity: 'error' }))
+        return
+      }
+
+      const formData = new FormData()
+      formData.append('image', file)
+
+      const response = await productApi.uploadImage(formData)
+      if (!response) {
+        throw new Error('Không nhận được URL ảnh từ server')
+      }
+
+      const newColors = [...editingProduct.colors]
+      newColors[colorIndex] = {
+        ...newColors[colorIndex],
+        images: [...newColors[colorIndex].images, response]
+      }
+      setEditingProduct({
+        ...editingProduct,
+        colors: newColors
+      })
+
+      dispatch(showSnackbar({ message: 'Tải ảnh lên thành công!', severity: 'success' }))
+    } catch (error) {
+      console.error('Lỗi tải ảnh:', error)
+      dispatch(showSnackbar({
+        message: error.message || 'Có lỗi xảy ra khi tải ảnh lên! Vui lòng thử lại.',
+        severity: 'error'
+      }))
+    }
+  }
+
+  const handleRemoveImage = (colorIndex, imageIndex) => {
+    const newColors = [...editingProduct.colors]
+    newColors[colorIndex] = {
+      ...newColors[colorIndex],
+      images: newColors[colorIndex].images.filter((_, i) => i !== imageIndex)
+    }
+    setEditingProduct({
+      ...editingProduct,
+      colors: newColors
+    })
   }
 
   const handleChangePage = (event, newPage) => {
@@ -202,6 +306,18 @@ export default function Products() {
     const url = String(imageUrl)
     if (url.startsWith('http')) return url
     return `${API_ROOT}${url}`
+  }
+
+  const handleSizeChange = (size) => {
+    const currentSizes = editingProduct.sizes || []
+    const newSizes = currentSizes.includes(size)
+      ? currentSizes.filter(s => s !== size)
+      : [...currentSizes, size]
+
+    setEditingProduct({
+      ...editingProduct,
+      sizes: newSizes
+    })
   }
 
   return (
@@ -268,31 +384,15 @@ export default function Products() {
                 >
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Avatar
-                        src={product.images && product.images.length > 0 ? getImageUrl(product.images[0]) : ''}
-                        alt={product.name}
-                        sx={{ width: 40, height: 40 }}
-                      >
-                        {product.name.charAt(0)}
-                      </Avatar>
                       <Typography>{product.name}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                      {product.images && product.images.slice(0, 3).map((image, index) => (
-                        <Avatar
-                          key={index}
-                          src={getImageUrl(image)}
-                          alt={`${product.name} ${index + 1}`}
-                          sx={{ width: 32, height: 32 }}
-                        />
-                      ))}
-                      {product.images && product.images.length > 3 && (
-                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'grey.300' }}>
-                          +{product.images.length - 3}
-                        </Avatar>
-                      )}
+                      <img
+                        src={getImageUrl(product.colors[0].images[0])}
+                        style={{ width: 50, height: 50 }}
+                      />
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -419,46 +519,129 @@ export default function Products() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Kích thước (phân cách bằng dấu phẩy)"
-                fullWidth
-                margin="dense"
-                value={editingProduct?.sizes?.join(', ') || ''}
-                onChange={(e) => setEditingProduct({
-                  ...editingProduct,
-                  sizes: e.target.value.split(',').map(size => size.trim()).filter(Boolean)
-                })}
-                error={!!errors.sizes}
-                helperText={errors.sizes}
-              />
+              <Typography variant="subtitle1" gutterBottom>Kích thước</Typography>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                  <Box
+                    key={size}
+                    onClick={() => handleSizeChange(size)}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: '5px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      border: `1px solid ${editingProduct?.sizes?.includes(size) ? '#1cb05c' : '#e5e5e5'}`,
+                      transition: '0.3s',
+                      '&:hover': {
+                        borderColor: '#1cb05c'
+                      }
+                    }}
+                  >
+                    <Typography variant="body2">{size}</Typography>
+                  </Box>
+                ))}
+              </Box>
+              {errors.sizes && (
+                <Typography color="error" variant="caption">
+                  {errors.sizes}
+                </Typography>
+              )}
             </Grid>
+
+            {/* Phần màu sắc */}
             <Grid item xs={12}>
-              <TextField
-                label="Màu sắc (phân cách bằng dấu phẩy)"
-                fullWidth
-                margin="dense"
-                value={editingProduct?.colors?.join(', ') || ''}
-                onChange={(e) => setEditingProduct({
-                  ...editingProduct,
-                  colors: e.target.value.split(',').map(color => color.trim()).filter(Boolean)
-                })}
-                error={!!errors.colors}
-                helperText={errors.colors}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Hình ảnh (URL, phân cách bằng dấu phẩy)"
-                fullWidth
-                margin="dense"
-                value={editingProduct?.images?.join(', ') || ''}
-                onChange={(e) => setEditingProduct({
-                  ...editingProduct,
-                  images: e.target.value.split(',').map(url => url.trim()).filter(Boolean)
-                })}
-                error={!!errors.images}
-                helperText={errors.images}
-              />
+              <Typography variant="subtitle1" gutterBottom>Màu sắc</Typography>
+              {editingProduct?.colors?.map((color, colorIndex) => (
+                <Box key={colorIndex} sx={{ mb: 2, p: 2, border: '1px solid #ddd', borderRadius: 1 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        label="Tên màu"
+                        fullWidth
+                        margin="dense"
+                        value={color.name}
+                        onChange={(e) => handleColorChange(colorIndex, 'name', e.target.value)}
+                        error={!!errors[`colors.${colorIndex}.name`]}
+                        helperText={errors[`colors.${colorIndex}.name`]}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        label="Mã màu"
+                        fullWidth
+                        margin="dense"
+                        type="color"
+                        value={color.colorCode}
+                        onChange={(e) => handleColorChange(colorIndex, 'colorCode', e.target.value)}
+                        error={!!errors[`colors.${colorIndex}.colorCode`]}
+                        helperText={errors[`colors.${colorIndex}.colorCode`]}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleRemoveColor(colorIndex)}
+                        disabled={editingProduct.colors.length === 1}
+                      >
+                        Xóa màu
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle2" gutterBottom>Hình ảnh</Typography>
+                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {color.images.map((image, imageIndex) => (
+                          <Box key={imageIndex} sx={{ position: 'relative' }}>
+                            <Avatar
+                              src={getImageUrl(image)}
+                              alt={`${color.name} ${imageIndex + 1}`}
+                              sx={{ width: 100, height: 100 }}
+                            />
+                            <IconButton
+                              size="small"
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                bgcolor: 'error.main',
+                                color: 'white',
+                                '&:hover': { bgcolor: 'error.dark' }
+                              }}
+                              onClick={() => handleRemoveImage(colorIndex, imageIndex)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        ))}
+                        <Button
+                          variant="outlined"
+                          component="label"
+                          sx={{ width: 100, height: 100 }}
+                        >
+                          <input
+                            type="file"
+                            hidden
+                            accept="image/*"
+                            onChange={(e) => handleAddImage(colorIndex, e.target.files)}
+                          />
+                          <AddIcon sx={{ fontSize: 40 }} />
+                        </Button>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              ))}
+              <Button
+                variant="outlined"
+                startIcon={<AddIcon />}
+                onClick={handleAddColor}
+                sx={{ mt: 1 }}
+              >
+                Thêm màu
+              </Button>
             </Grid>
           </Grid>
         </DialogContent>

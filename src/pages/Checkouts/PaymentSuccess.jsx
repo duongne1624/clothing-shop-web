@@ -26,7 +26,7 @@ function PaymentSuccess() {
         if (apptransid === '1') {
           setOrderId(searchParams.get('orderId'))
         } else {
-          const result = await orderApi(apptransid)
+          const result = await orderApi.getOrderByTranId(apptransid)
           setOrderId(result._id)
         }
       } catch (error) {
