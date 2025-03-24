@@ -1,13 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { set, get, del } from 'idb-keyval'
 
-const loadUserFromDB = async () => await get('user')
+export const loadUser = createAsyncThunk('auth/loadUser', async () => {
+  return await get('user')
+})
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: await loadUserFromDB() || null,
-    isAuthenticated: !!(await loadUserFromDB())
+    user: null,
+    isAuthenticated: false,
+    loading: true
   },
   reducers: {
     loginSuccess: (state, action) => {
@@ -20,6 +23,13 @@ const authSlice = createSlice({
       state.isAuthenticated = false
       del('user')
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(loadUser.fulfilled, (state, action) => {
+      state.user = action.payload || null
+      state.isAuthenticated = !!action.payload
+      state.loading = false
+    })
   }
 })
 
