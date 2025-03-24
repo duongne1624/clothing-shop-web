@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base=./",
@@ -19,6 +22,7 @@
     "@reduxjs/toolkit": "^2.5.1",
     "@toolpad/core": "^0.12.0",
     "axios": "^1.7.9",
+    "cross-env": "^7.0.3",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.4.3",
     "idb-keyval": "^6.2.1",

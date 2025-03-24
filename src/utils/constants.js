@@ -1,1 +1,1 @@
-export const API_ROOT = 'http://localhost:8017'
+export const API_ROOT = 'https://clothing-shop-api-99u0.onrender.com'
