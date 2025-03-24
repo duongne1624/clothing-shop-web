@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     historyApiFallback: true
   },
+  build: {
+    chunkSizeWarningLimit: 2000
+  },
   resolve: {
     alias: [
       { find: '~', replacement: '/src' }
