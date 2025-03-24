@@ -155,58 +155,27 @@ function Checkouts() {
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
               <LocationOnIcon /> Thông tin giao hàng
             </Typography>
-            {!isLogin ? (
-              <>
-                <TextField
-                  fullWidth
-                  label="Họ và tên"
-                  value={userInfo.name}
-                  onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
-                  sx={{ my: 1 }}
-                />
-                <TextField
-                  fullWidth
-                  label="Số điện thoại"
-                  value={userInfo.phone}
-                  onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
-                  sx={{ my: 1 }}
-                />
-                <TextField
-                  fullWidth
-                  label="Địa chỉ"
-                  value={userInfo.address}
-                  onChange={e => setUserInfo({ ...userInfo, address: e.target.value })}
-                  sx={{ my: 1 }}
-                />
-              </>
-            ) : (
-              <>
-                <TextField
-                  fullWidth
-                  label="Họ và tên"
-                  value={userInfo.name}
-                  onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
-                  sx={{ my: 1 }}
-                  disabled
-                />
-                <TextField
-                  fullWidth
-                  label="Số điện thoại"
-                  value={userInfo.phone}
-                  onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
-                  sx={{ my: 1 }}
-                  disabled
-                />
-                <TextField
-                  fullWidth
-                  label="Địa chỉ"
-                  value={userInfo.address}
-                  onChange={e => setUserInfo({ ...userInfo, address: e.target.value })}
-                  sx={{ my: 1 }}
-                  disabled
-                />
-              </>
-            )}
+            <TextField
+              fullWidth
+              label="Họ và tên"
+              value={userInfo.name}
+              onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+              sx={{ my: 1 }}
+            />
+            <TextField
+              fullWidth
+              label="Số điện thoại"
+              value={userInfo.phone}
+              onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+              sx={{ my: 1 }}
+            />
+            <TextField
+              fullWidth
+              label="Địa chỉ"
+              value={userInfo.address}
+              onChange={e => setUserInfo({ ...userInfo, address: e.target.value })}
+              sx={{ my: 1 }}
+            />
           </CardContent>
         </MotionCard>
 
