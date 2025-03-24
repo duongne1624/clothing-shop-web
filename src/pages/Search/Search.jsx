@@ -2,7 +2,7 @@ import { Grid, Box } from '@mui/material'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
 import { useEffect, useState } from 'react'
 import { searchProduct } from '~/apis'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import useTitle from '~/hook/useTitle'
 import ProductCard from '~/components/ProductCard/ProductCard'
 import SortDropdown from '~/components/SortDropdown/SortDropdown'
@@ -12,7 +12,8 @@ function Search() {
   const [products, setProducts] = useState([])
   const [sortOption, setSortOption] = useState('featured')
 
-  const { keyword } = useParams()
+  const [searchParams] = useSearchParams()
+  const keyword = searchParams.get('search')
   useTitle(`Danh sách sản phẩm | ${keyword}`)
 
   useEffect(() => {

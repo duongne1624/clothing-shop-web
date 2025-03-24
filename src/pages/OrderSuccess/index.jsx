@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Box, Typography, Button, Paper, Divider, Grid, CircularProgress, Chip } from '@mui/material'
 import { motion } from 'framer-motion'
 import HomeIcon from '@mui/icons-material/Home'
@@ -14,11 +14,12 @@ import { API_ROOT } from '~/utils/constants'
 const MotionBox = motion(Box)
 
 function OrderSuccess() {
-  const { orderId } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [searchParams] = useSearchParams()
+  const orderId = searchParams.get('orderId')
 
   useEffect(() => {
     const fetchOrder = async () => {

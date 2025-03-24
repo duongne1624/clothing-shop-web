@@ -36,11 +36,11 @@ const routes = (
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/categories/:slug" element={<ListCategories />} />
-      <Route path="/search/:keyword" element={<Search />} />
+      <Route path="/search" element={<Search />} />
       <Route path="/product-details/:slug" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
-      <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/my-order" element={<MyOrder />} />
       <Route path="/fashion-news" element={<FashionNews />} />

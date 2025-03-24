@@ -133,7 +133,7 @@ function PaymentSuccess() {
             <Button
               variant="outlined"
               startIcon={<ShoppingCartIcon />}
-              onClick={() => navigate(`/order-success/${orderId}`)}
+              onClick={() => navigate(`/order-success?orderId=${orderId}`)}
               sx={{
                 borderRadius: 2,
                 textTransform: 'none',

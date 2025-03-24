@@ -249,7 +249,7 @@ function MyOrder() {
                       </Box>
                       <Button
                         variant="outlined"
-                        onClick={() => window.location.href = `/order-success/${order._id}`}
+                        onClick={() => window.location.href = `/order-success?orderId=${order._id}`}
                       >
                         Xem chi tiết
                       </Button>

@@ -26,7 +26,7 @@ function Header() {
 
   const handleClickSearch = () => {
     if (searchKeyword.trim().length < 1) return
-    navigate(`/Search/${searchKeyword}`)
+    navigate(`/Search?search=${searchKeyword}`)
     handleCloseSearch()
   }
 
