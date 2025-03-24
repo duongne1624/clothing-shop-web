@@ -11,6 +11,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { motion, AnimatePresence } from 'framer-motion'
+import { API_ROOT } from '~/utils/constants'
 
 // Mediator
 class ProductMediator {
@@ -70,7 +71,7 @@ const CategoryPage = () => {
         // Xử lý các trường hợp đặc biệt
         switch (slug) {
         case 'new-arrivals':
-        { response = await axios.get('http://localhost:8017/v1/products')
+        { response = await axios.get('${API_ROOT}/v1/products')
           // Lọc sản phẩm mới (ví dụ: sản phẩm được tạo trong 30 ngày gần đây)
           const thirtyDaysAgo = new Date()
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
@@ -81,26 +82,26 @@ const CategoryPage = () => {
         }
 
         case 'all-products':
-          response = await axios.get('http://localhost:8017/v1/products')
+          response = await axios.get(`${API_ROOT}/v1/products`)
           break
 
         case 'mens-shirts':
-          response = await axios.get('http://localhost:8017/v1/products/GetProductsByCategorySlug/ao-nam')
+          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategorySlug/ao-nam`)
           break
 
         case 'mens-pants':
-          response = await axios.get('http://localhost:8017/v1/products/GetProductsByCategorySlug/quan-nam')
+          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategorySlug/quan-nam`)
           break
 
         case 'sale':
-          response = await axios.get('http://localhost:8017/v1/products')
+          response = await axios.get(`${API_ROOT}/v1/products`)
           response.data = response.data.filter(product =>
             product.offerIds && product.offerIds.length > 0
           )
           break
 
         default:
-          response = await axios.get(`http://localhost:8017/v1/products/GetProductsByCategorySlug/${slug}`)
+          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategorySlug/${slug}`)
         }
 
         const productsData = response.data.products || response.data

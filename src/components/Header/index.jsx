@@ -30,11 +30,12 @@ function Header() {
     handleCloseSearch()
   }
 
-  const onKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleClickSearch()
-    }
-  }
+  // const onKeyPress = (e) => {
+  //   if (e.key === 'Enter') {
+  //     handleClickSearch()
+  //     return
+  //   }
+  // }
 
   const handleOpenSearch = () => {
     setShowSearch(true)
@@ -168,7 +169,7 @@ function Header() {
                 placeholder="Tìm kiếm sản phẩm..."
                 value={searchKeyword}
                 onChange={handleChange}
-                onKeyDown={onKeyPress}
+                // onKeyDown={onKeyPress}
               />
               <IconButton
                 type="button"
@@ -362,7 +363,7 @@ function Header() {
                   placeholder="Tìm kiếm sản phẩm..."
                   value={searchKeyword}
                   onChange={handleChange}
-                  onKeyDown={onKeyPress}
+                  // onKeyDown={onKeyPress}
                   autoFocus
                 />
                 <IconButton

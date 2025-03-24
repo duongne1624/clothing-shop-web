@@ -21,8 +21,6 @@ function Search() {
       .then((products) => {
         setProducts(products)
       })
-      .catch(() => {
-      })
   }, [keyword])
 
   const sortedProducts = sortProducts(products, sortOption)

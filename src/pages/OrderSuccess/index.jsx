@@ -23,23 +23,14 @@ function OrderSuccess() {
 
   useEffect(() => {
     const fetchOrder = async () => {
-      try {
-        const result = await orderApi.getOrderById(orderId)
-        await Promise.all(result.items.map(async (item) => {
-          const product = await fetchProductDetailsAPIById(item.productId)
-          item.image = product.colors[0].images[0]
-          item.productName = product.name
-        }))
-        setOrder(result)
-      } catch (error) {
-        console.error('Error fetching order:', error)
-        dispatch(showSnackbar({
-          message: 'Có lỗi xảy ra khi lấy thông tin đơn hàng',
-          severity: 'error'
-        }))
-      } finally {
-        setLoading(false)
-      }
+      const result = await orderApi.getOrderById(orderId)
+      await Promise.all(result.items.map(async (item) => {
+        const product = await fetchProductDetailsAPIById(item.productId)
+        item.image = product.colors[0].images[0]
+        item.productName = product.name
+      }))
+      setOrder(result)
+      setLoading(false)
     }
 
     fetchOrder()
