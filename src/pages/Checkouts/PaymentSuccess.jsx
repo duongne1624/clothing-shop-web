@@ -30,7 +30,6 @@ function PaymentSuccess() {
           setOrderId(result._id)
         }
       } catch (error) {
-        console.error('Error fetching order:', error)
         dispatch(showSnackbar({
           message: 'Có lỗi xảy ra khi lấy thông tin đơn hàng',
           severity: 'error'

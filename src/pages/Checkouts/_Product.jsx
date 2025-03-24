@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Box, TextField, Button, Typography, Divider, RadioGroup, FormControlLabel, Radio, Chip, Table, TableHead, TableBody, TableRow, TableCell, Badge, Paper, Card, CardContent } from '@mui/material'
+import { Box, TextField, Button, Typography, Divider, RadioGroup, FormControlLabel, Radio, Chip, Table, TableHead, TableBody, TableRow, TableCell, Badge, Card, CardContent } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs'
+import { useSearchParams } from 'react-router-dom'
 import { showSnackbar } from '~/redux/snackbarSlice'
 import { createOrder, getCouponByCode } from '~/apis'
 import { API_ROOT } from '~/utils/constants'
@@ -31,7 +30,6 @@ function Checkouts() {
   const [selectedMethod, setSelectedMethod] = useState('cod')
   const { user } = useSelector(state => state.auth)
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const productId = searchParams.get('productId')
   const image = searchParams.get('image')
@@ -152,26 +150,26 @@ function Checkouts() {
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#1976d2' }}>
               <LocationOnIcon /> Thông tin giao hàng
             </Typography>
-            <TextField 
-              fullWidth 
-              label="Họ và tên" 
-              value={userInfo.name} 
-              onChange={e => setUserInfo({ ...userInfo, name: e.target.value })} 
-              sx={{ my: 1 }} 
+            <TextField
+              fullWidth
+              label="Họ và tên"
+              value={userInfo.name}
+              onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+              sx={{ my: 1 }}
             />
-            <TextField 
-              fullWidth 
-              label="Số điện thoại" 
-              value={userInfo.phone} 
-              onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })} 
-              sx={{ my: 1 }} 
+            <TextField
+              fullWidth
+              label="Số điện thoại"
+              value={userInfo.phone}
+              onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+              sx={{ my: 1 }}
             />
-            <TextField 
-              fullWidth 
-              label="Địa chỉ" 
-              value={userInfo.address} 
-              onChange={e => setUserInfo({ ...userInfo, address: e.target.value })} 
-              sx={{ my: 1 }} 
+            <TextField
+              fullWidth
+              label="Địa chỉ"
+              value={userInfo.address}
+              onChange={e => setUserInfo({ ...userInfo, address: e.target.value })}
+              sx={{ my: 1 }}
             />
           </CardContent>
         </MotionCard>
@@ -192,9 +190,9 @@ function Checkouts() {
                   value={method.id}
                   control={<Radio />}
                   label={
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
+                    <Box sx={{
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: 1,
                       p: 1,
                       borderRadius: 1,
@@ -206,11 +204,11 @@ function Checkouts() {
                       {method.label}
                     </Box>
                   }
-                  sx={{ 
-                    mb: 1, 
-                    p: 1, 
-                    borderRadius: 1, 
-                    border: '1px solid #ddd', 
+                  sx={{
+                    mb: 1,
+                    p: 1,
+                    borderRadius: 1,
+                    border: '1px solid #ddd',
                     width: '100%',
                     '&:hover': {
                       borderColor: '#1976d2'
@@ -219,11 +217,11 @@ function Checkouts() {
                 />
               ))}
             </RadioGroup>
-            <Button 
-              variant="contained" 
-              color="primary" 
-              fullWidth 
-              sx={{ 
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
                 mt: 2,
                 py: 1.5,
                 fontSize: '1.1rem',
@@ -233,7 +231,7 @@ function Checkouts() {
                 '&:hover': {
                   boxShadow: '0 6px 16px rgba(25, 118, 210, 0.3)'
                 }
-              }} 
+              }}
               onClick={() => handleCheckout(selectedMethod)}
             >
               Hoàn tất đơn hàng ({totalPrice.toLocaleString()}₫)
@@ -269,7 +267,7 @@ function Checkouts() {
                         alt={name}
                         width="60"
                         height="60"
-                        style={{ 
+                        style={{
                           borderRadius: '10px',
                           objectFit: 'cover',
                           boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
@@ -301,11 +299,11 @@ function Checkouts() {
                 <LocalOfferIcon /> Mã giảm giá
               </Typography>
               <Box display="flex" gap={1}>
-                <TextField 
-                  fullWidth 
-                  placeholder="Nhập mã giảm giá" 
-                  value={couponCode} 
-                  onChange={e => setCouponCode(e.target.value)} 
+                <TextField
+                  fullWidth
+                  placeholder="Nhập mã giảm giá"
+                  value={couponCode}
+                  onChange={e => setCouponCode(e.target.value)}
                   size='small'
                   sx={{
                     '& .MuiOutlinedInput-root': {
@@ -313,9 +311,9 @@ function Checkouts() {
                     }
                   }}
                 />
-                <Button 
-                  variant="contained" 
-                  onClick={handleApplyCoupon} 
+                <Button
+                  variant="contained"
+                  onClick={handleApplyCoupon}
                   disabled={!!appliedCoupon}
                   sx={{ borderRadius: 2 }}
                 >
@@ -323,10 +321,10 @@ function Checkouts() {
                 </Button>
               </Box>
               {appliedCoupon && (
-                <Chip 
-                  label={`Mã: ${appliedCoupon} (-${discountPrice.toLocaleString()}₫)`} 
-                  onDelete={() => { setDiscount(0); setAppliedCoupon(null) }} 
-                  color="primary" 
+                <Chip
+                  label={`Mã: ${appliedCoupon} (-${discountPrice.toLocaleString()}₫)`}
+                  onDelete={() => { setDiscount(0); setAppliedCoupon(null) }}
+                  color="primary"
                   sx={{ mt: 1 }}
                 />
               )}
@@ -334,7 +332,7 @@ function Checkouts() {
 
             <Divider sx={{ my: 3 }} />
 
-            <Box sx={{ 
+            <Box sx={{
               bgcolor: '#f8f9fa',
               p: 3,
               borderRadius: 2,

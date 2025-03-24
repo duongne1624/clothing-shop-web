@@ -16,14 +16,7 @@ function MyCart() {
   useEffect(() => {
     fetchProductsAPI()
       .then((products) => {
-        if (!products) {
-          navigate('/')
-        } else {
-          setProducts(products)
-        }
-      })
-      .catch(() => {
-        navigate('/')
+        setProducts(products)
       })
   }, [navigate])
 

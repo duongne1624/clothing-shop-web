@@ -71,7 +71,7 @@ const CategoryPage = () => {
         // Xử lý các trường hợp đặc biệt
         switch (slug) {
         case 'new-arrivals':
-        { response = await axios.get('${API_ROOT}/v1/products')
+        { response = await axios.get(`${API_ROOT}/v1/products`)
           // Lọc sản phẩm mới (ví dụ: sản phẩm được tạo trong 30 ngày gần đây)
           const thirtyDaysAgo = new Date()
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)

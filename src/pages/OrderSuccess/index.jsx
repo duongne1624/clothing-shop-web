@@ -23,17 +23,27 @@ function OrderSuccess() {
 
   useEffect(() => {
     const fetchOrder = async () => {
-      const result = await orderApi.getOrderById(orderId)
-      await Promise.all(result.items.map(async (item) => {
-        const product = await fetchProductDetailsAPIById(item.productId)
-        item.image = product.colors[0].images[0]
-        item.productName = product.name
-      }))
-      setOrder(result)
-      setLoading(false)
+      try {
+        const result = await orderApi.getOrderById(orderId)
+        const updatedItems = await Promise.all(
+          result.items.map(async (item) => {
+            const product = await fetchProductDetailsAPIById(item.productId)
+            return {
+              ...item,
+              image: product?.colors?.[0]?.images?.[0] || '',
+              productName: product?.name || 'Sản phẩm không tồn tại'
+            }
+          })
+        )
+        setOrder({ ...result, items: updatedItems })
+      } catch (error) {
+        dispatch(showSnackbar({ message: 'Không lấy được đơn hàng', severity: 'error' }))
+      } finally {
+        setLoading(false)
+      }
     }
 
-    fetchOrder()
+    if (orderId) fetchOrder()
   }, [orderId, dispatch])
 
   const formatCurrency = (amount) => {
