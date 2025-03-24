@@ -4,7 +4,7 @@ import { store } from './redux/store'
 import routes from '~/routes/index'
 import GlobalSnackbar from '~/components/GlobalSnackbar/GlobalSnackbar'
 import GlobalLoading from '~/components/GlobalLoading/GlobalLoading'
-import AuthProvider from '~/components/AuthProvider' // Tạo component để load user
+import AuthProvider from '~/components/AuthProvider'
 
 export default function App() {
   return (
