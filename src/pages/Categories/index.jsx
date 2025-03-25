@@ -171,17 +171,14 @@ const CategoryPage = () => {
   }
 
   const filteredProducts = products.filter(product => {
-    // Lọc theo giá
     if (product.price < selectedFilters.priceRange[0] || product.price > selectedFilters.priceRange[1]) {
       return false
     }
 
-    // Lọc theo kích thước
     if (selectedFilters.sizes.length > 0 && !selectedFilters.sizes.some(size => product.sizes.includes(size))) {
       return false
     }
 
-    // Lọc theo màu sắc
     if (selectedFilters.colors.length > 0 && !selectedFilters.colors.some(color =>
       product.colors.some(c => c.name.toLowerCase() === color.toLowerCase())
     )) {
@@ -191,7 +188,6 @@ const CategoryPage = () => {
     return true
   })
 
-  // Áp dụng sắp xếp cho sản phẩm đã lọc
   const sortedAndFilteredProducts = sortProducts(filteredProducts, mediator.sortOption)
 
   const startIndex = (page - 1) * productsPerPage
@@ -340,7 +336,6 @@ const CategoryPage = () => {
         </Box>
         <SortDropdown onSortChange={(option) => {
           mediator.setSortOption(option)
-          // Cập nhật lại danh sách sản phẩm đã sắp xếp
           const newSortedProducts = sortProducts(filteredProducts, option)
           mediator.setProducts(newSortedProducts)
         }} />

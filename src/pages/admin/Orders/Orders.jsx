@@ -474,20 +474,22 @@ export default function Orders() {
                             }
                           />
                         </ListItem>
-                        <ListItem sx={{ py: 1.5 }}>
-                          <ListItemText
-                            primary={
-                              <Typography variant="subtitle2" color="text.secondary">
-                                Mã giao dịch
-                              </Typography>
-                            }
-                            secondary={
-                              <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                                {selectedOrder.transactionId}
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
+                        {selectedOrder.transactionId && (
+                          <ListItem sx={{ py: 1.5 }}>
+                            <ListItemText
+                              primary={
+                                <Typography variant="subtitle2" color="text.secondary">
+                                  Mã giao dịch
+                                </Typography>
+                              }
+                              secondary={
+                                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                  {selectedOrder.transactionId}
+                                </Typography>
+                              }
+                            />
+                          </ListItem>
+                        )}
                       </List>
                     </CardContent>
                   </Card>

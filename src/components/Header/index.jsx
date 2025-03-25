@@ -123,6 +123,7 @@ function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          alignContent: 'center',
           py: 0.5,
           gap: 2
         }}>
@@ -134,10 +135,10 @@ function Header() {
             onClick={() => navigate('/home')}
           >
             <img
-              src="/logo-web.png"
+              src="/logo-2.png"
               alt="logo"
-              width={120}
-              height={45}
+              width={190}
+              height={32}
               style={{ objectFit: 'cover' }}
             />
           </motion.div>
