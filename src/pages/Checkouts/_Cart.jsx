@@ -21,7 +21,7 @@ const paymentMethods = [
 ]
 
 function Checkouts() {
-  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '' })
+  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '', email: '' })
   const [couponCode, setCouponCode] = useState('')
   const [discount, setDiscount] = useState(0)
   const [appliedCoupon, setAppliedCoupon] = useState(null)
@@ -31,14 +31,13 @@ function Checkouts() {
   const { user } = useSelector(state => state.auth)
   const dispatch = useDispatch()
 
-  const isLogin = user ? true : false
-
   useEffect(() => {
     if (user) {
       setUserInfo({
         name: user.name,
         phone: user.phone,
-        address: user.address
+        address: user.address,
+        email: user.email
       })
     }
   }, [user])
@@ -95,6 +94,16 @@ function Checkouts() {
       return
     }
 
+    if (userInfo.email.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Email không được để trống!', severity: 'error' }))
+      return
+    }
+
+    if (!userInfo.email.includes('@')) {
+      dispatch(showSnackbar({ message: 'Email không đúng định dạng!', severity: 'error' }))
+      return
+    }
+
     if (userInfo.address.trim().length === 0) {
       dispatch(showSnackbar({ message: 'Địa chỉ không được để trống!', severity: 'error' }))
       return
@@ -106,6 +115,7 @@ function Checkouts() {
       userId: user?._id || null,
       name: userInfo?.name,
       phone: userInfo?.phone,
+      email: userInfo?.email,
       address: userInfo?.address,
       items: cart.map(item => ({
         productId: item.id,
@@ -167,6 +177,13 @@ function Checkouts() {
               label="Số điện thoại"
               value={userInfo.phone}
               onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+              sx={{ my: 1 }}
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              value={userInfo.email}
+              onChange={e => setUserInfo({ ...userInfo, email: e.target.value })}
               sx={{ my: 1 }}
             />
             <TextField

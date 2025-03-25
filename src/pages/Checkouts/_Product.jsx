@@ -22,7 +22,7 @@ const paymentMethods = [
 ]
 
 function Checkouts() {
-  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '' })
+  const [userInfo, setUserInfo] = useState({ name: '', phone: '', address: '', email: '' })
   const [searchParams] = useSearchParams()
   const [couponCode, setCouponCode] = useState('')
   const [discount, setDiscount] = useState(0)
@@ -52,7 +52,8 @@ function Checkouts() {
       setUserInfo({
         name: user.name,
         phone: user.phone,
-        address: user.address
+        address: user.address,
+        email: user.email
       })
     }
   }, [user])
@@ -97,9 +98,10 @@ function Checkouts() {
     const redirecturl = `${window.location.origin}/payment-success`
 
     const orderData = {
-      userId: user?.id || null,
+      userId: user?._id || null,
       name: userInfo?.name,
       phone: userInfo?.phone,
+      email: userInfo?.email,
       address: userInfo?.address,
       items: [{
         productId: productId,
@@ -162,6 +164,13 @@ function Checkouts() {
               label="Số điện thoại"
               value={userInfo.phone}
               onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+              sx={{ my: 1 }}
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              value={userInfo.email}
+              onChange={e => setUserInfo({ ...userInfo, email: e.target.value })}
               sx={{ my: 1 }}
             />
             <TextField
