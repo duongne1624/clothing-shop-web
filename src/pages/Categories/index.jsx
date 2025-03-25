@@ -52,7 +52,7 @@ const CategoryPage = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [showFilters, setShowFilters] = useState(false)
   const [selectedFilters, setSelectedFilters] = useState({
-    priceRange: [0, 10000000],
+    priceRange: [0, 2000000],
     sizes: [],
     colors: []
   })
@@ -86,11 +86,11 @@ const CategoryPage = () => {
           break
 
         case 'mens-shirts':
-          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategorySlug/ao-nam`)
+          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategoryType/65d123456789abcd12340001`)
           break
 
         case 'mens-pants':
-          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategorySlug/quan-nam`)
+          response = await axios.get(`${API_ROOT}/v1/products/GetProductsByCategoryType/65d123456789abcd12340005`)
           break
 
         case 'sale':
@@ -200,10 +200,10 @@ const CategoryPage = () => {
 
   const priceMarks = [
     { value: 0, label: '0đ' },
-    { value: 2500000, label: '2.5M' },
-    { value: 5000000, label: '5M' },
-    { value: 7500000, label: '7.5M' },
-    { value: 10000000, label: '10M' }
+    { value: 500000, label: '500K' },
+    { value: 1000000, label: '1M' },
+    { value: 1500000, label: '1.5M' },
+    { value: 2000000, label: '2M' }
   ]
 
   const sizeOptions = ['S', 'M', 'L', 'XL', 'XXL']
@@ -221,7 +221,7 @@ const CategoryPage = () => {
           onChange={(event, newValue) => handleFilterChange('priceRange', newValue)}
           valueLabelDisplay="auto"
           min={0}
-          max={10000000}
+          max={2000000}
           marks={priceMarks}
           sx={{ mt: 2 }}
         />

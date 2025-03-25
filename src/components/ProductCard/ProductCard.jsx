@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useState, useEffect, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import dayjs from 'dayjs'
 import { addToCart } from '~/redux/cartSlice'
 import { showSnackbar } from '~/redux/snackbarSlice'
 import { tagColors } from '~/assets/js/tagColor'
@@ -21,6 +22,7 @@ function ProductCard({ product }) {
   const [selectedColor, setSelectedColor] = useState(null)
   const [selectedSize, setSelectedSize] = useState(null)
   const [image, setImage] = useState(null)
+  const [tag, setTag] = useState('')
 
   const handleCloseBackdrop = () => setOpenDetail(false)
   const handleOpenBackdrop = (event) => {
@@ -37,9 +39,22 @@ function ProductCard({ product }) {
     window.scrollTo(0, 0)
   }
 
-  const tag = 'SALE'
-
   useEffect(() => {
+    if (product?.stock === 0) {
+      setTag('OUTOFSTOCK')
+    }
+    else if (product?.stock <= 20) {
+      setTag('LIMITED')
+    }
+    else if (product?.sold >= 10) {
+      setTag('HOT')
+    }
+    else if (product?.offerIds.length > 0) {
+      setTag('SALE')
+    }
+    else if (product?.createdAt && dayjs().diff(dayjs(product.createdAt), 'day') < 7) {
+      setTag('NEW')
+    }
     if (product?.colors?.length > 0) {
       setSelectedColor(product.colors[0])
       setImage(product.colors[0].images[0])
@@ -73,6 +88,10 @@ function ProductCard({ product }) {
   const dispatch = useDispatch()
 
   const handleAddToCart = () => {
+    if (product.stock === 0) {
+      dispatch(showSnackbar({ message: 'Sản phẩm đã hết hàng!', severity: 'error' }))
+      return
+    }
     dispatch(addToCart({ product, quantity, selectedColor, selectedSize, slug: product.slug }))
     setOpenDetail(false)
     dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
@@ -143,7 +162,11 @@ function ProductCard({ product }) {
                 zIndex: 1
               }}
             >
-              {tag}
+              {tag === 'SALE' ? 'Giảm giá'
+                : tag === 'OUTOFSTOCK' ? 'Hết hàng'
+                  : tag === 'HOT' ? 'HOT'
+                    : tag === 'LIMITED' ? 'Giới hạn'
+                      : tag === 'NEW' ? 'Mới' : 'Còn hàng' }
             </Box>
           )}
 

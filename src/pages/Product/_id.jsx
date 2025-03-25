@@ -98,7 +98,7 @@ function ProductDetails() {
               alignItems: 'center',
               width: '100%'
             }}>
-              <Typography variant='h6'>SẢN PHẨM VỪA XEM</Typography>
+              <Typography variant='h6'>CÓ THỂ BẠN THÍCH</Typography>
               <Typography
                 sx={{
                   textAlign: 'center',

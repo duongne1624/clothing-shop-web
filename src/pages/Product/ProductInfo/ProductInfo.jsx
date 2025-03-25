@@ -54,11 +54,19 @@ function ProductInfo({ product, coupons }) {
   const dispatch = useDispatch()
 
   const handleAddToCart = () => {
+    if (product.stock === 0) {
+      dispatch(showSnackbar({ message: 'Sản phẩm đã hết hàng!', severity: 'error' }))
+      return
+    }
     dispatch(addToCart({ product, quantity, selectedColor, selectedSize }))
     dispatch(showSnackbar({ message: 'Sản phẩm được thêm vào giỏ hàng!', severity: 'success' }))
   }
 
   const handleClickBuy = () => {
+    if (product.stock === 0) {
+      dispatch(showSnackbar({ message: 'Sản phẩm đã hết hàng!', severity: 'error' }))
+      return
+    }
     const encodedColor = encodeURIComponent(JSON.stringify(selectedColor))
     navigate(`/checkouts/product?productId=${product?._id}&image=${image}&name=${product?.name}&quantity=${quantity}&size=${selectedSize}&color=${encodedColor}&price=${product?.price}`)
   }

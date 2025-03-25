@@ -279,11 +279,14 @@ export default function Products() {
 
     try {
       if (editingProduct._id) {
-        await productApi.updateProduct(editingProduct._id, editingProduct)
-        setProducts(products.map(product => (product._id === editingProduct._id ? editingProduct : product)))
+        const productId = editingProduct._id
+        delete editingProduct._id
+        await productApi.updateProduct(productId, editingProduct)
+        editingProduct._id = productId
+        setProducts(products.map(product => (product._id === productId ? editingProduct : product)))
         dispatch(showSnackbar({ message: 'Cập nhật sản phẩm thành công!', severity: 'success' }))
       } else {
-        const newProduct = await productApi.addProduct(editingProduct)
+        const newProduct = await productApi.createProduct(editingProduct)
         setProducts([...products, newProduct])
         dispatch(showSnackbar({ message: 'Thêm sản phẩm thành công!', severity: 'success' }))
       }
