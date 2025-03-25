@@ -56,7 +56,7 @@ const fashionNews = [
 ]
 
 function FashionNews() {
-  useTitle('Tin tức thời trang | TDW Shop')
+  useTitle('Tin tức thời trang | 4TREND\'s Shop')
 
   return (
     <Box sx={{ pb: 4 }}>

@@ -24,7 +24,7 @@ function Home() {
   const [topRatedProducts, setTopRatedProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useTitle('Trang chủ | Clothing Shop')
+  useTitle('Trang chủ | 4TREND\'s Shop')
 
   useEffect(() => {
     const fetchProducts = async () => {
