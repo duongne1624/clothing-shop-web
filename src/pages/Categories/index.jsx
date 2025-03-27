@@ -60,7 +60,7 @@ const CategoryPage = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  useTitle(`Danh sách sản phẩm | ${category}`)
+  useTitle('Danh sách sản phẩm | 4TREND\'s Shop')
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,11 +68,9 @@ const CategoryPage = () => {
         setLoading(true)
         let response
 
-        // Xử lý các trường hợp đặc biệt
         switch (slug) {
         case 'new-arrivals':
         { response = await axios.get(`${API_ROOT}/v1/products`)
-          // Lọc sản phẩm mới (ví dụ: sản phẩm được tạo trong 30 ngày gần đây)
           const thirtyDaysAgo = new Date()
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
           response.data = response.data.filter(product =>

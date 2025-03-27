@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, TextField, Button, Typography, Divider, RadioGroup, FormControlLabel, Radio, Chip, Table, TableHead, TableBody, TableRow, TableCell, Badge, Card, CardContent } from '@mui/material'
+import { Box, TextField, Button, Typography, Divider, RadioGroup, FormControlLabel, Radio, Chip, Table, TableHead, TableBody, TableRow, TableCell, Badge, Card, CardContent, MenuItem } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { showSnackbar } from '~/redux/snackbarSlice'
 import { getCouponByCode, createOrder } from '~/apis'
@@ -10,13 +10,14 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PaymentIcon from '@mui/icons-material/Payment'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
+import axios from 'axios'
 
 const MotionCard = motion(Card)
 
 const paymentMethods = [
   { id: 'cod', label: 'Thanh toán khi giao hàng (COD)', icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6' },
-  { id: 'vnpay', label: 'Thanh toán VNPAY', icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/vnpay_new.svg?v=6' },
   { id: 'zalopay', label: 'Ví ZaloPay', icon: 'https://simg.zalopay.com.vn/zlp-website/assets/new_logo_6c5db2d21b.svg' },
+  { id: 'vnpay', label: 'Thanh toán VNPAY', icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/vnpay_new.svg?v=6' },
   { id: 'momo', label: 'Ví MoMo', icon: 'https://hstatic.net/0/0/global/design/seller/image/payment/momo.svg?v=6' }
 ]
 
@@ -26,20 +27,35 @@ function Checkouts() {
   const [discount, setDiscount] = useState(0)
   const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [selectedMethod, setSelectedMethod] = useState('cod')
+  const [provinces, setProvinces] = useState([])
+  const [province, setProvince] = useState('')
+  const [districts, setDistricts] = useState([])
+  const [district, setDistrict] = useState('')
+  const [wards, setWards] = useState([])
+  const [ward, setWard] = useState('')
 
   const cart = useSelector(state => state.cart.cart)
   const { user } = useSelector(state => state.auth)
   const dispatch = useDispatch()
+
+  const fetchProvinces = async () => {
+    try {
+      const response = await axios.get('https://provinces.open-api.vn/api/p/')
+      setProvinces(response.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
     if (user) {
       setUserInfo({
         name: user.name,
         phone: user.phone,
-        address: user.address,
         email: user.email
       })
     }
+    fetchProvinces()
   }, [user])
 
   const originalPrice = cart.reduce((total, product) => total + product.price * product.quantity, 0)
@@ -79,22 +95,22 @@ function Checkouts() {
   }
 
   const handleCheckout = async (paymentMethod) => {
-    if (cart.length === 0) {
+    if (!cart || cart.length === 0) {
       dispatch(showSnackbar({ message: 'Giỏ hàng đang trống!', severity: 'error' }))
       return
     }
 
-    if (userInfo.name.trim().length === 0) {
+    if (!userInfo.name || userInfo.name.trim().length === 0) {
       dispatch(showSnackbar({ message: 'Tên không được để trống!', severity: 'error' }))
       return
     }
 
-    if (userInfo.phone.trim().length === 0) {
+    if (!userInfo.phone || userInfo.phone.trim().length === 0) {
       dispatch(showSnackbar({ message: 'Số điện thoại không được để trống!', severity: 'error' }))
       return
     }
 
-    if (userInfo.email.trim().length === 0) {
+    if (!userInfo.email || userInfo.email.trim().length === 0) {
       dispatch(showSnackbar({ message: 'Email không được để trống!', severity: 'error' }))
       return
     }
@@ -104,10 +120,32 @@ function Checkouts() {
       return
     }
 
-    if (userInfo.address.trim().length === 0) {
+    if (!province.name || province.name.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Vui lòng chọn tỉnh', severity: 'error' }))
+      return
+    }
+
+    if (!district.name || district.name.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Vui lòng chọn quận/huyện', severity: 'error' }))
+      return
+    }
+
+    if (!ward.name || ward.name.trim().length === 0) {
+      dispatch(showSnackbar({ message: 'Vui lòng chọn Xã', severity: 'error' }))
+      return
+    }
+
+    if (!userInfo.address || userInfo.address.trim().length === 0) {
       dispatch(showSnackbar({ message: 'Địa chỉ không được để trống!', severity: 'error' }))
       return
     }
+
+    if (paymentMethod === 'momo' || paymentMethod === 'vnpay') {
+      dispatch(showSnackbar({ message: 'Chức năng này đang phát triển!', severity: 'info' }))
+      return
+    }
+
+    const address = `${userInfo.address}, ${ward.name}, ${district.name}, ${province.name}`
 
     const redirecturl = `${window.location.origin}/payment-success`
 
@@ -115,8 +153,8 @@ function Checkouts() {
       userId: user?._id || null,
       name: userInfo?.name,
       phone: userInfo?.phone,
+      address: address,
       email: userInfo?.email,
-      address: userInfo?.address,
       items: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -150,6 +188,40 @@ function Checkouts() {
     const url = String(imageUrl)
     if (url.startsWith('http')) return url
     return `${API_ROOT}${url}`
+  }
+
+  const handleChangeProvince = async (e) => {
+    try {
+      const provinceResponse = await axios.get(`https://provinces.open-api.vn/api/p/${e.target.value}`)
+      setProvince(provinceResponse.data)
+
+      const response = await axios.get('https://provinces.open-api.vn/api/d/')
+
+      const filteredDistricts = response.data.filter(district => district.province_code === parseInt(e.target.value))
+
+      setDistricts(filteredDistricts)
+      setDistrict(filteredDistricts[0])
+      setWards([])
+      setWard({})
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu tỉnh/thành hoặc quận/huyện:', error)
+    }
+  }
+
+  const handleChangeDistrict = async (e) => {
+    try {
+      const districtResponse = await axios.get(`https://provinces.open-api.vn/api/d/${e.target.value}`)
+      setDistrict(districtResponse.data)
+
+      const response = await axios.get('https://provinces.open-api.vn/api/w/')
+
+      const filteredWards = response.data.filter(ward => ward.district_code === parseInt(e.target.value))
+
+      setWards(filteredWards)
+      setWard(filteredWards[0])
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu quận/huyện hoặc phường:', error)
+    }
   }
 
   return (
@@ -186,9 +258,47 @@ function Checkouts() {
               onChange={e => setUserInfo({ ...userInfo, email: e.target.value })}
               sx={{ my: 1 }}
             />
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between'
+            }}>
+              <TextField
+                select
+                label="Tỉnh"
+                value={province.code}
+                sx={{ my: 1, width: '30%' }}
+                onChange={(e) => handleChangeProvince(e)}
+              >
+                {provinces.map(province => (
+                  <MenuItem key={province.code} value={province.code}>{province.name}</MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Quận/huyện"
+                value={district.code}
+                sx={{ my: 1, width: '30%' }}
+                onChange={(e) => handleChangeDistrict(e)}
+              >
+                {districts.map(district => (
+                  <MenuItem key={district.code} value={district.code}>{district.name}</MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label='Xã'
+                value={ward.code}
+                sx={{ my: 1, width: '30%' }}
+                onChange={(e) => setWard(e.target.value)}
+              >
+                {wards.map(ward => (
+                  <MenuItem key={ward.code} value={ward}>{ward.name}</MenuItem>
+                ))}
+              </TextField>
+            </Box>
             <TextField
               fullWidth
-              label="Địa chỉ"
+              label="Địa chỉ (số nhà, tên đường)"
               value={userInfo.address}
               onChange={e => setUserInfo({ ...userInfo, address: e.target.value })}
               sx={{ my: 1 }}
