@@ -23,7 +23,19 @@ function PaymentSuccess() {
     const fetchOrder = async () => {
       try {
         const apptransid = searchParams.get('apptransid')
-        if (apptransid === '1') {
+        const vnp_TxnRef = searchParams.get('vnp_TxnRef')
+        if (vnp_TxnRef) {
+          const vnp_Params = {
+            vnp_Amount: searchParams.get('vnp_Amount'),
+            vnp_TxnRef: searchParams.get('vnp_TxnRef'),
+            vnp_TransactionStatus: searchParams.get('vnp_TransactionStatus'),
+            vnp_SecureHash: searchParams.get('vnp_SecureHash')
+          }
+          await orderApi.updateOrderVNPAY(vnp_Params)
+          const result = await orderApi.getOrderByTranId(vnp_TxnRef)
+          setOrderId(result._id)
+        }
+        else if (apptransid === '1') {
           setOrderId(searchParams.get('orderId'))
         } else {
           const result = await orderApi.getOrderByTranId(apptransid)
@@ -43,7 +55,8 @@ function PaymentSuccess() {
   }, [searchParams, dispatch])
 
   const status = searchParams.get('status')
-  const isSuccess = status === '1'
+  const vnp_ResponseCode = searchParams.get('vnp_ResponseCode')
+  const isSuccess = status === '1' || vnp_ResponseCode === '00'
 
   return (
     <MotionBox

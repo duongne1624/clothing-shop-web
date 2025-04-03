@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { update } from 'idb-keyval'
 import { API_ROOT } from '~/utils/constants'
 
 export const fetchProductsAPI = async () => {
@@ -292,6 +293,15 @@ export const orderApi = {
   updateOrder: async (id, data) => {
     try {
       const response = await axios.put(`${API_ROOT}/v1/orders/${id}`, data)
+      return response.data
+    } catch (error) {
+      throw error.response?.data || { message: 'Lỗi không xác định' }
+    }
+  },
+
+  updateOrderVNPAY: async (data) => {
+    try {
+      const response = await axios.post(`${API_ROOT}/v1/orders/callback/vnpay`, data)
       return response.data
     } catch (error) {
       throw error.response?.data || { message: 'Lỗi không xác định' }
