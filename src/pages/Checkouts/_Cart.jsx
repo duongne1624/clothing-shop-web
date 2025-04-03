@@ -39,12 +39,8 @@ function Checkouts() {
   const dispatch = useDispatch()
 
   const fetchProvinces = async () => {
-    try {
-      const response = await axios.get('https://provinces.open-api.vn/api/p/')
-      setProvinces(response.data)
-    } catch (error) {
-      console.error(error)
-    }
+    const response = await axios.get('https://provinces.open-api.vn/api/p/')
+    setProvinces(response.data)
   }
 
   useEffect(() => {
@@ -90,7 +86,7 @@ function Checkouts() {
         dispatch(showSnackbar({ message: 'Mã giảm giá không hợp lệ!', severity: 'error' }))
       }
     } catch (error) {
-      dispatch(showSnackbar({ message: `Lỗi khi kiểm tra mã giảm giá! ${error}`, severity: 'error' }))
+      dispatch(showSnackbar({ message: 'Mã giảm giá không tồn tại.', severity: 'error' }))
     }
   }
 
@@ -170,7 +166,14 @@ function Checkouts() {
       redirecturl: redirecturl
     }
 
-    const response = await createOrder(orderData)
+    let response = ''
+    try {
+      response = await createOrder(orderData)
+    } catch (error) {
+      dispatch(showSnackbar({ message: error.response.data.message, severity: 'warning' }))
+      return
+    }
+
     if (response.order.paymentInfo.return_code === 1) {
       dispatch(showSnackbar({ message: 'Tạo đơn hàng thành công!', severity: 'success' }))
       window.location.href = response.order.paymentInfo.order_url
@@ -191,37 +194,29 @@ function Checkouts() {
   }
 
   const handleChangeProvince = async (e) => {
-    try {
-      const provinceResponse = await axios.get(`https://provinces.open-api.vn/api/p/${e.target.value}`)
-      setProvince(provinceResponse.data)
+    const provinceResponse = await axios.get(`https://provinces.open-api.vn/api/p/${e.target.value}`)
+    setProvince(provinceResponse.data)
 
-      const response = await axios.get('https://provinces.open-api.vn/api/d/')
+    const response = await axios.get('https://provinces.open-api.vn/api/d/')
 
-      const filteredDistricts = response.data.filter(district => district.province_code === parseInt(e.target.value))
+    const filteredDistricts = response.data.filter(district => district.province_code === parseInt(e.target.value))
 
-      setDistricts(filteredDistricts)
-      setDistrict(filteredDistricts[0])
-      setWards([])
-      setWard({})
-    } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu tỉnh/thành hoặc quận/huyện:', error)
-    }
+    setDistricts(filteredDistricts)
+    setDistrict(filteredDistricts[0])
+    setWards([])
+    setWard({})
   }
 
   const handleChangeDistrict = async (e) => {
-    try {
-      const districtResponse = await axios.get(`https://provinces.open-api.vn/api/d/${e.target.value}`)
-      setDistrict(districtResponse.data)
+    const districtResponse = await axios.get(`https://provinces.open-api.vn/api/d/${e.target.value}`)
+    setDistrict(districtResponse.data)
 
-      const response = await axios.get('https://provinces.open-api.vn/api/w/')
+    const response = await axios.get('https://provinces.open-api.vn/api/w/')
 
-      const filteredWards = response.data.filter(ward => ward.district_code === parseInt(e.target.value))
+    const filteredWards = response.data.filter(ward => ward.district_code === parseInt(e.target.value))
 
-      setWards(filteredWards)
-      setWard(filteredWards[0])
-    } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu quận/huyện hoặc phường:', error)
-    }
+    setWards(filteredWards)
+    setWard(filteredWards[0])
   }
 
   return (
