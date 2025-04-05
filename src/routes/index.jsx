@@ -28,6 +28,7 @@ import Coupons from '~/pages/admin/Coupons/Coupons'
 import PaymentSuccess from '~/pages/Checkouts/PaymentSuccess'
 import SalesStatistics from '~/pages/admin/SalesStatistics/SalesStatistics'
 import FashionNews from '~/pages/FashionNews'
+import AdminChatPage from '~/pages/admin/chat/Chat'
 
 const routes = (
   <>
@@ -63,6 +64,7 @@ const routes = (
         <Route path="/admin/products" element={<Product />} />
         <Route path="/admin/orders" element={<Orders />} />
         <Route path="/admin/coupons" element={<Coupons />} />
+        <Route path="/admin/chat" element={<AdminChatPage />} />
       </Route>
     </Route>
 

@@ -20,6 +20,7 @@ import { authApi } from '~/apis'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logout } from '~/redux/authSlide'
+import ChatIcon from '@mui/icons-material/Chat'
 
 const menuItems = [
   { name: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -28,7 +29,8 @@ const menuItems = [
   { name: 'categories', label: 'Categories', icon: <CategoryIcon /> },
   { name: 'products', label: 'Products', icon: <ShoppingCartIcon /> },
   { name: 'orders', label: 'Orders', icon: <ReceiptIcon /> },
-  { name: 'coupons', label: 'Coupons', icon: <DiscountIcon /> }
+  { name: 'coupons', label: 'Coupons', icon: <DiscountIcon /> },
+  { name: 'chat', label: 'Chat', icon: <ChatIcon /> }
 ]
 
 export default function AdminLayout() {
