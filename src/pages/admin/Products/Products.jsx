@@ -21,23 +21,13 @@ import {
   Chip,
   Tooltip,
   Grid,
-  Card,
-  CardContent,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
   Badge,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment,
-  FormGroup,
-  FormControlLabel,
-  Checkbox
+  InputAdornment
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -403,9 +393,15 @@ export default function Products() {
                   </TableCell>
                   <TableCell>{formatCurrency(product.price)}</TableCell>
                   <TableCell>
-                    <Badge badgeContent={product.stock} color={product.stock > 0 ? 'success' : 'error'}>
-                      <Chip label="Tồn kho" size="small" />
-                    </Badge>
+                    {product.stock > 0 ? (
+                      <Badge badgeContent={product.stock} color={product.stock > 0 ? 'success' : 'error'}>
+                        <Chip label="Tồn kho" size="small" />
+                      </Badge>
+                    ) : (
+                      <Badge badgeContent={product.stock} color={product.stock > 0 ? 'success' : 'error'}>
+                        <Chip label="Hết hàng" size="small" />
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Chip
